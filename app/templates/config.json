@@ -1,0 +1,41 @@
+{
+  "development": {
+    "logging": {
+      "console": true,
+      "info_path": "./tmp/info.txt",
+      "error_path": "./tmp/errors.txt"
+    },
+    "password_reset_url": "http://127.0.0.1:4444/#/password_reset",
+    "port": 4444,
+    "secret":  "dev-secret",
+    "allow_tests": true,
+    "smtp": {
+      "system": {
+        "user": "andrew.legacy@gmail.com", 
+        "password": "wyndin00", 
+        "host": "smtp.gmail.com", 
+        "ssl": true
+      }
+    }
+  },
+  "test": {
+    "port": 4444,
+    "secret":  "test-secret",
+    "allow_tests": true,
+    "password_reset_url": "http://127.0.0.1:4444/#/password_reset",
+    "smtp": {
+      "system": {
+        "user": "andrew.legacy@gmail.com", 
+        "password": "wyndin00", 
+        "host": "smtp.gmail.com", 
+        "ssl": true
+      }
+    }
+  },
+  "production": {
+    "port": 80,
+    "dialect": "sqlite",
+    "storage": "./db.production.sqlite",
+    "secret":  "prod-secret"
+  }
+}
