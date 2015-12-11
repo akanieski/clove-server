@@ -16,7 +16,7 @@ describe("Token Authentication API", function () {
                     username: "administrator"
                 }
             }, function (err, resp, body) {
-                
+                console.log(body);
                 assert.equal(resp.statusCode, 200, "login response status code must be 200");
                 assert.equal(body.token !== "undefined" && body.token !== null, true);
                 assert.equal(body.email.indexOf(body.token) > -1, true);
