@@ -14,7 +14,7 @@ app.use(express.static("www"));
 
 // For Ad-Hoc execution
 if (!module.parent) {
-    var server = http.listen(clove.config.port || 3000, function() {
+    var server = http.listen(process.env.NODE_PORT || clove.config.port || 3000, function() {
         var host = server.address().address;
         var port = server.address().port;
         console.log("Clove server listening on port %s", port);
