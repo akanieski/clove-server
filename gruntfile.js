@@ -57,7 +57,7 @@
             main: "app.js",
             app: {
                 src: ["Gruntfile.js", "seeders/**/*.js", "tests/**/*.js", "app/**/*.js", "*.js"],
-            }
+            } 
         }
 
     });
