@@ -95,10 +95,8 @@
         "wipe_test", 
         "shell:setup_test", 
         "serve:start", 
-        "wait", 
-        "continue:on", 
-        "mochaTest", 
-        "continue:off", 
+        "wait",  
+        "mochaTest",  
         "serve:stop"
     ]);
 
