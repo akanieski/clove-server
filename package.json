@@ -7,6 +7,9 @@
     "name": "ankan",
     "email": ""
   },
+  "scripts": {
+    "postinstall": "sequelize db:migrate --config ./config/db.json --env test && sequelize db:migrate --config ./config/db.json --env development"
+  },
   "dependencies": {
     "async": "^1.4.2",
     "body-parser": "^1.14.1",
