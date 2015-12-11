@@ -15,7 +15,7 @@ describe("User API", function () {
                 json: {
                     username: "testuser",
                     password: "TestPassword00#",
-                    password2: "TestPassword00#",
+                    password2: "TestPassword00#x",
                     first_name: "test",
                     last_name: "user",
                     email: "a@a.com"
