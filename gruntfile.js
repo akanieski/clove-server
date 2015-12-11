@@ -18,9 +18,14 @@
             }
         },
         shell: {
+            load_seed: {
+                command: "node " + path.resolve("./seeders/test_data.js") + " test",
+                env: {
+                    NODE_ENV: "test"
+                }
+            },
             setup_test: {
-                command: "sequelize db:migrate --env test --config ./config/db.json & node " +
-                         path.resolve("./seeders/test_data.js") + " test",
+                command: "sequelize db:migrate --env test --config ./config/db.json",
                 env: {
                     NODE_ENV: "test"
                 }
@@ -94,6 +99,7 @@
     grunt.registerTask("test", [
         "wipe_test", 
         "shell:setup_test", 
+        "shell:load_seed", 
         "serve:start", 
         "wait",  
         "mochaTest",  
