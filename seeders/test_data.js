@@ -1,5 +1,5 @@
 ﻿global.clove = require("../app/core");
-
+console.log("Loading seed data ...");
 clove.async.series([
     function (next) {
         clove.db.User.findOne({where: {username: "administrator"}}).then(function(user) {
@@ -25,5 +25,7 @@ clove.async.series([
             }  
         });
     },
-
+    function() {
+        console.log("[Done Loading Seed Data]");
+    }
 ]);
