@@ -10,6 +10,10 @@
         next();
     });
 
+    app.get("/", function(req, res){
+       res.send("OK"); 
+    });
+
     app.get("/api/status", clove.middleware.authorize({}, function (req, res) {
         res.status(200).send({ status: "OK" });
     }));

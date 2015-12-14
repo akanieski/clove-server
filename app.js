@@ -17,7 +17,7 @@ if (!module.parent) {
     var server = http.listen(process.env.PORT || clove.config.port || 3000, function() {
         var host = server.address().address;
         var port = server.address().port;
-        console.log("Clove server listening on port %s using the '" + clove.env + "'", port);
+        console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", port);
     });
 } else {
     // For module export execution
