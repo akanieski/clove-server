@@ -8,7 +8,7 @@
       "error_path": "./tmp/errors.txt"
     },
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "port": 4444,
+    "endpoint_port": 4444,
     "secret":  "dev-secret",
     "allow_tests": true,
     "smtp": {
@@ -30,7 +30,7 @@
     "dialect": "postgres",
     "use_env_variable": "DATABASE_URL",
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "port": 4444,
+    "endpoint_port": 4444,
     "secret":  "dev-secret",
     "allow_tests": true,
     "smtp": {
@@ -53,7 +53,7 @@
       "error_path": "./tmp/errors.txt"
     },
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "port": 4444,
+    "endpoint_port": 4444,
     "secret":  "dev-secret",
     "allow_tests": true,
     "smtp": {
@@ -74,7 +74,7 @@
   "test": {
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
-    "port": 5555,
+    "endpoint_port": 5555,
     "secret":  "test-secret",
     "allow_tests": true,
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
@@ -90,7 +90,7 @@
     }
   },
   "production": {
-    "port": 80,
+    "endpoint_port": 80,
     "dialect": "sqlite",
     "storage": "./db.production.sqlite",
     "secret":  "prod-secret"
