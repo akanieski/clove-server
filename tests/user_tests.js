@@ -5,7 +5,7 @@
 var request = require("request");
 var assert = require("assert");
 global.clove = require("../app/core");
-var host = "http://127.0.0.1:" + clove.config.port;
+var host = "http://127.0.0.1:" + clove.config.endpoint_port;
 
 describe("User API", function () {
     describe("api/user", function() {
