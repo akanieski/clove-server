@@ -20,6 +20,7 @@
     "express": "^4.13.3",
     "jsonwebtoken": "^5.4.1",
     "moment": "^2.9.0",
+    "pg": "^4.4.3",
     "request": "^2.65.0",
     "require-directory": "^2.1.1",
     "sequelize": "^3.13.0",
