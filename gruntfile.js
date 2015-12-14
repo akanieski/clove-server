@@ -18,23 +18,14 @@
             }
         },
         shell: {
-            load_seed: {
-                command: "node " + path.resolve("./seeders/test_data.js") + " test",
-                env: {
-                    NODE_ENV: "test"
-                }
+            seed: {
+                command: "node " + path.resolve("./seeders/test_data.js")
             },
-            setup_test: {
-                command: "sequelize db:migrate --env test --config ./config/db.json",
-                env: {
-                    NODE_ENV: "test"
-                }
+            migrate: {
+                command: "sequelize db:migrate",
             },
             run_tests: {
-                command: "mocha tests",
-                env: {
-                    NODE_ENV: "test"
-                }
+                command: "mocha tests"
             }, 
         },
         wait: {
@@ -67,11 +58,13 @@
 
     });
 
-    grunt.registerTask("wipe_test", function () {
-        process.env.NODE_ENV = "test";
-        var fs = require("fs");
-        if (fs.existsSync(path.resolve("db.test.sqlite"))) {
-            fs.unlinkSync(path.resolve("db.test.sqlite"));
+    grunt.registerTask("wipe", function () {
+        var clove = require('./app/core');
+        if (clove.config.dialect == 'sqlite') {
+            var fs = require("fs");
+            if (fs.existsSync(path.resolve(clove.config.storage))) {
+                fs.unlinkSync(path.resolve(clove.config.storage));
+            }
         }
     });
     
@@ -97,9 +90,9 @@
     grunt.registerTask("default", ["serve:start", "watch"]);
     grunt.registerTask("build", ["jshint", "jscs"]);
     grunt.registerTask("test", [
-        "wipe_test", 
-        "shell:setup_test", 
-        "shell:load_seed", 
+        "wipe", 
+        "shell:migrate", 
+        "shell:seed", 
         "serve:start", 
         "wait",  
         "mochaTest",  

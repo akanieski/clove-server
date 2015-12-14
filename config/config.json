@@ -1,5 +1,52 @@
 {
   "development": {
+    "dialect": "sqlite",
+    "storage": "./db.development.sqlite",
+    "logging": {
+      "console": true,
+      "info_path": "./tmp/info.txt",
+      "error_path": "./tmp/errors.txt"
+    },
+    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
+    "port": 4444,
+    "secret":  "dev-secret",
+    "allow_tests": true,
+    "smtp": {
+      "system": {
+        "user": "andrew.legacy@gmail.com", 
+        "password": "wyndin00", 
+        "host": "smtp.gmail.com", 
+        "ssl": true,
+        "type": "smtp"
+      }
+    },
+    "password_strength": {
+      "minLength": 8,
+      "specialCharacters": true,
+      "capitals": true
+    }
+  },
+  "codeship": {
+    "dialect": "postgres",
+    "use_env_variable": "DATABASE_URL",
+    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
+    "port": 4444,
+    "secret":  "dev-secret",
+    "allow_tests": true,
+    "smtp": {
+      "system": {
+        "type": "test"
+      }
+    },
+    "password_strength": {
+      "minLength": 8,
+      "specialCharacters": true,
+      "capitals": true
+    }
+  },
+  "heroku_sandbox": {
+    "dialect": "postgres",
+    "use_env_variable": "DATABASE_URL",
     "logging": {
       "console": true,
       "info_path": "./tmp/info.txt",
@@ -25,6 +72,8 @@
     }
   },
   "test": {
+    "dialect": "sqlite",
+    "storage": "./db.test.sqlite",
     "port": 5555,
     "secret":  "test-secret",
     "allow_tests": true,

@@ -1,16 +1,22 @@
 "use strict";
+/* global __dirname */
+/* global process */
 /* jshint node: true */
 module.exports = function(env) {
     var fs = require("fs"), 
         path = require("path"), 
         Sequelize = require("sequelize"), 
         basename = path.basename(module.filename), 
-        config = require(path.resolve("./config/db.json"))[env], 
+        config = require(path.resolve("./config/config.json"))[env], 
         sequelize, 
         db = {};
     
-    if (process.env.DATABASE_URL) {
-        sequelize = new Sequelize(process.env.DATABASE_URL);
+    if (config.use_env_variable) {
+        if (!process.env[config.use_env_variable]) {
+            throw new Error("Environment variable (" + config.use_env_variable + ") has not been set");
+        } else {
+            sequelize = new Sequelize(process.env[config.use_env_variable]);
+        }
     } else {
         sequelize = new Sequelize(config.database, config.username, config.password, config);
     }
