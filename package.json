@@ -8,7 +8,7 @@
     "email": ""
   },
   "scripts": {
-    "postinstall": "sequelize db:migrate --config ./config/db.json --env test && sequelize db:migrate --config ./config/db.json --env development",
+    "postinstall": "sequelize db:migrate",
     "start": "node app.js"
   },
   "dependencies": {
