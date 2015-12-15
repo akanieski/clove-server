@@ -2,11 +2,6 @@
   "development": {
     "dialect": "sqlite",
     "storage": "./db.development.sqlite",
-    "logging": {
-      "console": true,
-      "info_path": "./tmp/info.txt",
-      "error_path": "./tmp/errors.txt"
-    },
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
     "endpoint_port": 4444,
     "secret":  "dev-secret",
@@ -47,11 +42,6 @@
   "heroku_sandbox": {
     "dialect": "postgres",
     "use_env_variable": "DATABASE_URL",
-    "logging": {
-      "console": true,
-      "info_path": "./tmp/info.txt",
-      "error_path": "./tmp/errors.txt"
-    },
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
     "endpoint_port": 4444,
     "secret":  "dev-secret",
