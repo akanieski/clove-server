@@ -72,6 +72,7 @@
     }
   },
   "test": {
+    "logging": false,
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
     "endpoint_port": 5555,

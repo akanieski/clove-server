@@ -1,4 +1,6 @@
-﻿module.exports = function(grunt) {
+﻿/* global global */
+/* global clove */
+module.exports = function(grunt) {
     var path = require("path");
     var config = require("./config/config");
 
@@ -72,7 +74,6 @@
     var clearCache = function() {
         for (var key in require.cache) {
             if (key.indexOf(__dirname) > -1 && key.indexOf("node_modules") == -1) {
-                console.log("Invalidating cache: " + key);
                 delete require.cache[key];
             }
         }
@@ -110,8 +111,8 @@
             clearCache();
             var app = require("./app.js");
             
-            clove._server = http.createServer(app).listen(clove.config.port, function() {
-                console.log("Clove app server listening");
+            clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
+                console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
                 done();
             });
         };
