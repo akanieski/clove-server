@@ -9,7 +9,8 @@
   },
   "scripts": {
     "postinstall": "sequelize db:migrate",
-    "start": "node app.js"
+    "start": "node app.js",
+    "preinstall": "npm install -g sequelize-cli"
   },
   "dependencies": {
     "async": "^1.4.2",
