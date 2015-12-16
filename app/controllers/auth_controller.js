@@ -49,7 +49,7 @@ module.exports = function (app) {
                 response.status(401).send({ error: "Username and/or password is not valid" });
             }
 
-        }).error(function (err) {
+        }).catch(function (err) {
             response.status(500).send({ error: "Server error.", detail: err });
         });
 
