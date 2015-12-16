@@ -47,7 +47,6 @@
     "dialect": "postgres",
     "use_env_variable": "DATABASE_URL",
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "endpoint_port": 4444,
     "secret":  "dev-secret",
     "allow_tests": true,
     "smtp": {
