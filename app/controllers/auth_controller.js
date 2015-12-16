@@ -30,7 +30,7 @@ module.exports = function (app) {
         
         var q = db.User.findAll({
             where: {
-                active: 1, 
+                active: true, 
                 username: request.body.username, 
                 password: clove.utils.encrypt(request.body.password)
             }
