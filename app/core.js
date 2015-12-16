@@ -14,6 +14,8 @@
         env: env
     };
     
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = core.config.ssl ? "0" : "1";
+    
     core.utils = require("./utils")(core.config.secret);
 
     return core;

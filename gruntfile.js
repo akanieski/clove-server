@@ -2,6 +2,7 @@
 /* global clove */
 module.exports = function(grunt) {
     var path = require("path");
+    var fs = require("fs");
     var config = require("./config/config");
 
     grunt.initConfig({
@@ -104,17 +105,27 @@ module.exports = function(grunt) {
     
     grunt.registerTask("serve:start", "Start server", function() {
         console.log(global.clove !== undefined ? "Existing server instance located": "No Server Instance Found");
-        var http = require("http");
+        
         var done = this.async();
         var startup = function() {
             console.log("Starting Clove Server...");
             clearCache();
             var app = require("./app.js");
-            
-            clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
-                console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
-                done();
-            });
+            var http = clove.config.ssl ? require("https") : require("http");
+            if (clove.config.ssl) {
+                clove._server = http.createServer({
+                    key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
+                    cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
+                }, app).listen(clove.config.endpoint_port, function() {
+                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+                    done();
+                });
+            } else {
+                clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
+                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+                    done();
+                });
+            }
         };
         
         if (global.clove !== undefined) {

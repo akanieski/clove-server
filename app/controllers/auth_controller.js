@@ -37,8 +37,6 @@ module.exports = function (app) {
         });
 
         q.then(function (results) {
-            console.log(">>>>>>>>>>>>");
-            console.log(results);
             if (results && results.length > 0) {
                 var token = jwt.sign({
                     user_id: results[0].id,

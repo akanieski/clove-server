@@ -40,6 +40,10 @@
     }
   },
   "heroku_sandbox": {
+    "ssl": {
+      "key": "./certs/self-signed.key",
+      "crt": "./certs/self-signed.crt"
+    },
     "dialect": "postgres",
     "use_env_variable": "DATABASE_URL",
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
@@ -62,6 +66,10 @@
     }
   },
   "test": {
+    "ssl": {
+      "key": "./certs/self-signed.key",
+      "crt": "./certs/self-signed.crt"
+    },
     "logging": false,
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
