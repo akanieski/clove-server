@@ -69,6 +69,9 @@ describe("Email Services", function() {
         var emailer = new EmailService();
         
         emailer.on("sent", function(err, content) {
+            if (err) {
+                console.log(err);
+            }
             assert.equal(err, null);
             done();
         });

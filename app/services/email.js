@@ -112,6 +112,10 @@ var EmailService = function EmailService() {
                             alternative: true
                         });
                         server.send(options, function(err, msg) {
+                            if (err) {
+                                service.emit("error", err);
+                                return;
+                            }
                             service.emit("sent", err, msg && 
                                                       msg.alternative && 
                                                       msg.alternative.data ? msg.alternative.data : content);
