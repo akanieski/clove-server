@@ -40,10 +40,6 @@
     }
   },
   "heroku_sandbox": {
-    "ssl": {
-      "key": "./certs/self-signed.key",
-      "crt": "./certs/self-signed.crt"
-    },
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
