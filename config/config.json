@@ -44,8 +44,8 @@
       "key": "./certs/self-signed.key",
       "crt": "./certs/self-signed.crt"
     },
-    "dialect": "postgres",
-    "use_env_variable": "DATABASE_URL",
+    "dialect": "sqlite",
+    "storage": "./db.test.sqlite",
     "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
     "secret":  "dev-secret",
     "allow_tests": true,
@@ -68,7 +68,7 @@
     "ssl": {
       "key": "./certs/self-signed.key",
       "crt": "./certs/self-signed.crt"
-    },
+    },  
     "logging": false,
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
