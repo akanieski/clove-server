@@ -41,11 +41,11 @@ module.exports = (function () {
                     request.session = jwt.decode(token);
                     action(request, response, next);
                 } else {
-                    response.status(401).send({ error: errMessage});
+                    response.status(401).send({ error: errMessage, success: false});
                 }
                         
             } else {
-                response.status(401).send({ error: "Token not authorized" });    
+                response.status(401).send({ error: "Token not authorized", body: request.body, success: false, url: request.url, headers: request.headers });    
             }
                 
         };

@@ -10,7 +10,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                AppDomain.belongsToMany(models.User, { as: 'Users', through: models.UserAppDomain, foreignKey: 'appdomain_id' });
+                AppDomain.belongsToMany(models.User, { as: 'users', through: models.UserAppDomain, foreignKey: 'appdomain_id' });
             }
         },
         instanceMethods: {

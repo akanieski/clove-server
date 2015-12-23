@@ -13,9 +13,15 @@ var http = clove.config.ssl ? require("https") : require("http");
 
 app.use(bodyParser.json());
 
+// Bring in Controllers
+var SystemController = require("./app/controllers/system_controller.js");
+var AuthController = require("./app/controllers/auth_controller.js");
+var AppDomainController = require("./app/controllers/appdomain_controller.js");
+
 clove.middleware = require("./app/middleware");
-clove.controllers.system = require("./app/controllers/system_controller.js")(app);
-clove.controllers.auth = require("./app/controllers/auth_controller")(app);
+clove.controllers.system = new SystemController(app);
+clove.controllers.auth = new AuthController(app);
+clove.controllers.appdomain = new AppDomainController(app);
 
 app.use(express.static("www"));
 

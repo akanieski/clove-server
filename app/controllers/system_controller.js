@@ -1,6 +1,7 @@
-﻿module.exports = function (app) {
+﻿/* global clove */
+module.exports = function SystemController(app) {
     
-    var Controller = {};
+    var Controller = this;
 
     
     app.use(function (req, res, next) {

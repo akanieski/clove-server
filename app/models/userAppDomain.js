@@ -4,12 +4,20 @@
 
 module.exports = function (sequelize, DataTypes) {
     var UserAppDomain = sequelize.define("UserAppDomain", {
-        
+        id: {
+            type: DataTypes.BIGINT,
+            primaryKey: true,
+            allowNull: false,
+            autoIncrement: true,
+            unique: true
+        }
     }, {
         tableName: "tbl_userappdomains",
         timestamps: true,
         classMethods: {
             associate: function (models) {
+                UserAppDomain.belongsTo(models.User, {foreignKey: 'user_id', as: "user"});
+                UserAppDomain.belongsTo(models.AppDomain, {foreignKey: 'appdomain_id', as: "appDomain"});
             }
         },
         instanceMethods: {

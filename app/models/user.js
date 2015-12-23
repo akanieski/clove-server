@@ -18,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                User.belongsToMany(models.AppDomain, { as: 'AppDomains', through: models.UserAppDomain, foreignKey: 'user_id' });
+                User.belongsToMany(models.AppDomain, { as: 'appDomains', through: models.UserAppDomain, foreignKey: 'user_id' });
             }
         },
         instanceMethods: {

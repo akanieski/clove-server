@@ -1,8 +1,8 @@
 ﻿/* global clove */
 /* global clove */
-module.exports = function (app) {
+module.exports = function AuthController(app) {
     
-    var Controller = {},
+    var Controller = this,
         jwt = require("jsonwebtoken"),
         path = require("path"),
         EmailService = require("../services/email");
@@ -40,7 +40,8 @@ module.exports = function (app) {
             if (results && results.length > 0) {
                 var token = jwt.sign({
                     user_id: results[0].id,
-                    username: results[0].username
+                    username: results[0].username,
+                    claims: [],
                 }, clove.config.secret, {issuer: require("os").hostname()});
                 response.status(200).send({ token: token });
             } else {
@@ -199,7 +200,5 @@ module.exports = function (app) {
     app.post("/api/user", Controller.sign_up);
     app.post("/api/reset_password", Controller.start_reset_password);
     app.put("/api/reset_password", Controller.finish_reset_password);
-
-    return Controller;
 
 };
