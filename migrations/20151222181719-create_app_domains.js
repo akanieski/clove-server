@@ -89,6 +89,39 @@ module.exports = {
                 }).done(function () {
                     next();
                 });
+            }, 
+            function(next){
+                migration.createTable("tbl_userclaims", {
+                    id: {
+                        type: DataTypes.BIGINT,
+                        autoIncrement: true,
+                        unique: true,
+                        allowNull: false,
+                        primaryKey: true
+                    },
+                    claimId: {
+                        type: DataTypes.BIGINT, 
+                        allowNull: false,
+                        reference: "tbl_userclaims",
+                        referenceKey: "id"
+                    },
+                    userAppDomainId: {
+                        type: DataTypes.BIGINT, 
+                        allowNull: false,
+                        reference: "tbl_userappdomains",
+                        referenceKey: "id"
+                    },
+                    createdAt: {
+                        allowNull: false,
+                        type: DataTypes.DATE
+                    },
+                    updatedAt: {
+                        allowNull: false,
+                        type: DataTypes.DATE
+                    }
+                }).done(function () {
+                    next();
+                });
             }
         ], function(){
             done();
