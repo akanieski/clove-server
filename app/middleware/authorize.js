@@ -17,12 +17,12 @@
 module.exports = (function () {
     var jwt = require("jsonwebtoken");
     
-    return function (options, action) {
+    return function _processJWT(options, action) {
         if (typeof options == "function") {
             action = options;
             options = {};
         }
-        return function (request, response, next) {
+        return function processJWT(request, response, next) {
             if (request.headers.authorization && 
                 request.headers.authorization.indexOf("Bearer ") > -1 && 
                 request.headers.authorization.split(" ")[1]) {

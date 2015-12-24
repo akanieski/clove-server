@@ -4,13 +4,12 @@ module.exports = function AppDomainController(app) {
     var db = clove.db,
         Controller = this;
     
-    
-    Controller.createAppDomain = function(req, res, next) {
+    Controller.createAppDomain = function createAppDomain(req, res, next) {
         var bail = function(err, code) {
             res.status(code || 500).send({error: err, success: false});
         };
         
-        db.User.findById(req.session.user_id).then(function(user){
+        db.User.findById(req.session.userId).then(function(user){
             if (user) {
                 if (!user.active) {
                     bail("User account is not active", 401);
@@ -43,15 +42,15 @@ module.exports = function AppDomainController(app) {
     };
     
     
-    Controller.getAppDomain = function(req, res, next) {
+    Controller.getAppDomain = function getAppDomain(req, res, next) {
         var bail = function(err, code) {
             res.status(code || 500).send({error: err, success: false});
         };
-        var query = {appdomain_id: req.params.id};
+        var query = {appDomainId: req.params.id};
         // if jwt claims allow it ... then return the app domain regardles of whether the user
         // owns it.
         if (req.session.claims.indexOf('sysadmin') > -1) {
-            query.user_id = req.session.user_id;
+            query.userId = req.session.userId;
         }
         db.UserAppDomain.findOne({
             where: query, 
@@ -68,6 +67,10 @@ module.exports = function AppDomainController(app) {
                 }
             })
     };
+    
+    
+    
+    
     
     app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
     app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));

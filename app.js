@@ -16,12 +16,14 @@ app.use(bodyParser.json());
 // Bring in Controllers
 var SystemController = require("./app/controllers/system_controller.js");
 var AuthController = require("./app/controllers/auth_controller.js");
+var ClaimsController = require("./app/controllers/claim_controller.js");
 var AppDomainController = require("./app/controllers/appdomain_controller.js");
 
 clove.middleware = require("./app/middleware");
 clove.controllers.system = new SystemController(app);
 clove.controllers.auth = new AuthController(app);
 clove.controllers.appdomain = new AppDomainController(app);
+clove.controllers.claims = new ClaimsController(app);
 
 app.use(express.static("www"));
 

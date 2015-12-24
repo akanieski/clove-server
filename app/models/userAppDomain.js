@@ -16,8 +16,8 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                UserAppDomain.belongsTo(models.User, {foreignKey: 'user_id', as: "user"});
-                UserAppDomain.belongsTo(models.AppDomain, {foreignKey: 'appdomain_id', as: "appDomain"});
+                UserAppDomain.belongsTo(models.User, {foreignKey: 'userId', as: "user"});
+                UserAppDomain.belongsTo(models.AppDomain, {foreignKey: 'appDomainId', as: "appDomain"});
             }
         },
         instanceMethods: {
@@ -33,8 +33,8 @@ module.exports = function (sequelize, DataTypes) {
                 var errors = {};
                 
                 clove.db.UserAppDomain.findOne({where: {
-                    user_id: userAppDomain.user_id, 
-                    appdomain_id: userAppDomain.appdomain_id
+                    userId: userAppDomain.userId, 
+                    appDomainId: userAppDomain.appDomainId
                 }})
                     .then(function(u) {
                         if (u) {

@@ -8,10 +8,10 @@ module.exports = {
                 primaryKey: true,
                 type: DataTypes.BIGINT
             },
-            first_name: {
+            firstName: {
                 type: DataTypes.STRING
             },
-            last_name: {
+            lastName: {
                 type: DataTypes.STRING
             },
             username: {

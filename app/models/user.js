@@ -4,8 +4,8 @@
 
 module.exports = function (sequelize, DataTypes) {
     var User = sequelize.define("User", {
-        first_name: DataTypes.STRING,
-        last_name: DataTypes.STRING,
+        firstName: DataTypes.STRING,
+        lastName: DataTypes.STRING,
         username: DataTypes.STRING,
         password: DataTypes.STRING,
         email: DataTypes.STRING,
@@ -18,7 +18,8 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                User.belongsToMany(models.AppDomain, { as: 'appDomains', through: models.UserAppDomain, foreignKey: 'user_id' });
+                User.belongsToMany(models.AppDomain, { as: 'appDomains', through: models.UserAppDomain, foreignKey: 'userId' });
+                User.belongsTo(models.AppDomain, { as: 'defaultAppDomain', foreignKey: 'defaultAppDomainId' });
             }
         },
         instanceMethods: {
@@ -26,17 +27,17 @@ module.exports = function (sequelize, DataTypes) {
                 if (typeof options === "function") {
                     cb = options;
                     options = {
-                        confirm_password: false
+                        confirmPassword: false
                     };
                 }
                 var user = this;
                 var bail = function(err) {cb(err);};
                 var errors = {};
-                if (!user.first_name) {
-                    errors.first_name = "First name is required";
+                if (!user.firstName) {
+                    errors.firstName = "First name is required";
                 }
-                if (!user.last_name) {
-                    errors.last_name = "Last name is required";
+                if (!user.lastName) {
+                    errors.lastName = "Last name is required";
                 }
                 if (!user.username) {
                     errors.username = "Username is required";
@@ -51,7 +52,7 @@ module.exports = function (sequelize, DataTypes) {
                     errors.password = clove.utils.check_password(this.password);
                 }
                 
-                if (options.confirm_password && this.password !== options.confirmation) {
+                if (options.confirmPassword && this.password !== options.confirmation) {
                     errors.password2 = "Password confirmation does not match";
                 }
                 

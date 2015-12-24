@@ -26,7 +26,7 @@ module.exports = function AuthController(app) {
      *   error: 'Username and/or password is not valid'
      * }
      */
-    Controller.authenticate = function (request, response, next) {
+    Controller.authenticate = function authenticate(request, response, next) {
         
         var q = db.User.findAll({
             where: {
@@ -39,7 +39,7 @@ module.exports = function AuthController(app) {
         q.then(function (results) {
             if (results && results.length > 0) {
                 var token = jwt.sign({
-                    user_id: results[0].id,
+                    userId: results[0].id,
                     username: results[0].username,
                     claims: [],
                 }, clove.config.secret, {issuer: require("os").hostname()});
@@ -57,7 +57,7 @@ module.exports = function AuthController(app) {
     /**
      * Creates a new user profile 
     **/
-    Controller.sign_up = function(request, response) {
+    Controller.sign_up = function signUp(request, response) {
         var bail = function(err) {
             response.status(500).send({error: err, success: false});
         };
@@ -67,7 +67,7 @@ module.exports = function AuthController(app) {
         clove.async.series([
             function(next) {
                 user.isValid({
-                    confirm_password: true, 
+                    confirmPassword: true, 
                     confirmation: request.body.password2
                 }, function(err, fieldErrors) {
                     if (err) {
@@ -101,7 +101,7 @@ module.exports = function AuthController(app) {
     /**
      * Updates user profile's password for the given JWT 
     **/
-    Controller.finish_reset_password = function (request, response) {
+    Controller.finish_reset_password = function finishResetPassword(request, response) {
         var payload;
         
         // Verify the token is correct
@@ -132,7 +132,7 @@ module.exports = function AuthController(app) {
             response.status(420).send({error: "Could not locate provided user account"});
         };
         
-        clove.db.User.findById(payload.user_id)
+        clove.db.User.findById(payload.userId)
             .then(function(user) {
                 if (user) {
                     user.password = clove.utils.encrypt(request.body.password);
@@ -148,7 +148,7 @@ module.exports = function AuthController(app) {
     /**
      * Creates a password reset token (JWT) that is emailed to the user for password reset
     **/
-    Controller.start_reset_password = function (request, response, next) {
+    Controller.start_reset_password = function startResetPassword(request, response, next) {
         
         if (!request.body.username) {
             response.status(420).send({error: "Username or Email is required"});
@@ -162,7 +162,7 @@ module.exports = function AuthController(app) {
                     var token = jwt.sign({
                         username: user.username,
                         email: user.email,
-                        user_id: user.id
+                        userId: user.id
                     }, clove.config.secret, {expiresIn: "1h", subject: "password_reset"});
                     
                     var url = clove.config.password_reset_url + "?token=" + token;

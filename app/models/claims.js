@@ -1,16 +1,20 @@
-﻿/* global clove */
+/* global clove */
 /* jshint node: true */
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
-    var AppDomain = sequelize.define("AppDomain", {
-        name: DataTypes.STRING,
+    var Claim = sequelize.define("Claim", {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        description: DataTypes.STRING
     }, {
-        tableName: "tbl_appdomains",
+        tableName: "tbl_claims",
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                AppDomain.belongsToMany(models.User, { as: 'users', through: models.UserAppDomain, foreignKey: 'appDomainId' });
+                
             }
         },
         instanceMethods: {
@@ -21,19 +25,17 @@ module.exports = function (sequelize, DataTypes) {
                         /** Default options go here **/
                     };
                 }
-                var appDomain = this;
+                var claim = this;
                 var bail = function(err) {cb(err);};
                 var errors = {};
-                if (!appDomain.name) {
-                    errors.name = "Name is required";
-                }
                 
-                cb(null, clove.utils.equals(errors, {}) ? null : errors); 
+                cb(null, clove.utils.equals(errors, {}) ? null : errors);
+                
             }
         }
     });
     
     
     
-    return AppDomain;
+    return Claim;
 };

@@ -36,12 +36,12 @@ module.exports = {
                         primaryKey: true,
                         type: DataTypes.BIGINT
                     },
-                    user_id: {
+                    userId: {
                         type: DataTypes.BIGINT,
                         references: "tbl_users",
                         referenceKey: "id"
                     },
-                    appdomain_id: {
+                    appDomainId: {
                         type: DataTypes.BIGINT,
                         references: "tbl_appdomains",
                         referenceKey: "id"
@@ -55,10 +55,41 @@ module.exports = {
                         type: DataTypes.DATE
                     }
                 }).done(function () {
-                    console.log(arguments);
                     next();
                 });
             }, 
+            function(next){
+                migration.addColumn("tbl_users", "defaultAppDomainId", {
+                    type: DataTypes.BIGINT,
+                    references: "tbl_users",
+                    referenceKey: "id"
+                }).done(function () {
+                    next();
+                });
+            }, 
+            function(next){
+                migration.createTable("tbl_claims", {
+                    id: {
+                        type: DataTypes.BIGINT,
+                        autoIncrement: true,
+                        unique: true,
+                        allowNull: false,
+                        primaryKey: true
+                    },
+                    name: {type: DataTypes.STRING, allowNull: false},
+                    description: {type: DataTypes.STRING},
+                    createdAt: {
+                        allowNull: false,
+                        type: DataTypes.DATE
+                    },
+                    updatedAt: {
+                        allowNull: false,
+                        type: DataTypes.DATE
+                    }
+                }).done(function () {
+                    next();
+                });
+            }
         ], function(){
             done();
         });
@@ -70,6 +101,7 @@ module.exports = {
         return migration
             .dropTable("tbl_userappdomains")
             .dropTable("tbl_appdomains")
+            .dropTable("tbl_claims")
             .done(done);
   }
 };

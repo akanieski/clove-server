@@ -54,7 +54,9 @@ clove.async.series([
                     clove.db.AppDomain.create({
                         name: "Test App Domain"
                     }).then(function(appDomain){
-                        appDomain.addUser(user).then(next);
+                        appDomain.addUser(user).then(function(){
+                            next();
+                        });
                     });
                     
                 });
@@ -62,6 +64,36 @@ clove.async.series([
                 next();
             }
         });
+    },
+    function (next) {
+        console.log("Creating claim seeds");
+        clove.db.Claim.findOrCreate({where: {
+            name: "Domain Administrator", 
+            description: "Complete access to all elements of the domain"
+        }}).then(function(){
+            next();
+        });
+        
+    },
+    function (next) {
+        
+        clove.db.Claim.findOrCreate({where: {
+            name: "Domain Manager", 
+            description: "Management access to all elements of the domain"
+        }}).then(function(){
+            next();
+        });
+        
+    },
+    function (next) {
+        
+        clove.db.Claim.findOrCreate({where: {
+            name: "Domain User", 
+            description: "Basic access to all elements of the domain"
+        }}).then(function(){
+            next();
+        });
+        
     },
     function() {
         console.log("[Done Loading Seed Data]");

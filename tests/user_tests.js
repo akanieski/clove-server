@@ -16,8 +16,8 @@ describe("User API", function () {
                     username: "testuser",
                     password: "TestPassword00#",
                     password2: "TestPassword00#",
-                    first_name: "test",
-                    last_name: "user",
+                    firstName: "test",
+                    lastName: "user",
                     email: "a@a.com"
                 }
             }, function (err, resp, body) {
@@ -38,8 +38,8 @@ describe("User API", function () {
                 assert.equal(body.data !== "undefined" && body.errors !== null, true);
                 assert.equal(body.errors.username !== null, true);
                 assert.equal(body.errors.email !== null, true);
-                assert.equal(body.errors.first_name !== null, true);
-                assert.equal(body.errors.last_name !== null, true);
+                assert.equal(body.errors.firstName !== null, true);
+                assert.equal(body.errors.lastName !== null, true);
                 assert.equal(body.errors.password !== null, true);
                 done();
             });
@@ -51,8 +51,8 @@ describe("User API", function () {
                     username: "testuser",
                     password: "TestPassword00#",
                     password2: "TestPassword00#",
-                    first_name: "test",
-                    last_name: "user",
+                    firstName: "test",
+                    lastName: "user",
                     email: "a@a.com"
                 }
             }, function (err, resp, body) {
