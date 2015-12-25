@@ -3,7 +3,7 @@
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
-    var UserAppDomain = sequelize.define("UserAppDomain", {
+    var UserAppDomainClaim = sequelize.define("UserAppDomainClaim", {
         id: {
             type: DataTypes.BIGINT,
             primaryKey: true,
@@ -12,13 +12,12 @@ module.exports = function (sequelize, DataTypes) {
             unique: true
         }
     }, {
-        tableName: "tbl_userappdomains",
+        tableName: "tbl_userappdomainclaims",
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                UserAppDomain.belongsTo(models.User, {foreignKey: 'userId', as: "user"});
-                UserAppDomain.belongsTo(models.AppDomain, {foreignKey: 'appDomainId', as: "appDomain"});
-                UserAppDomain.belongsToMany(models.Claim, { as: 'claims', through: models.UserAppDomainClaim , foreignKey: 'userAppDomainId' });
+                UserAppDomainClaim.belongsTo(models.Claim, {foreignKey: 'claimId', as: "claim"});
+                UserAppDomainClaim.belongsTo(models.UserAppDomain, {foreignKey: 'userAppDomainId', as: "userAppDomain"});
             }
         },
         instanceMethods: {
@@ -29,17 +28,17 @@ module.exports = function (sequelize, DataTypes) {
                         /** Default options go here **/
                     };
                 }
-                var userAppDomain = this;
+                var userAppDomainClaim = this;
                 var bail = function(err) {cb(err);};
                 var errors = {};
                 
-                clove.db.UserAppDomain.findOne({where: {
-                    userId: userAppDomain.userId, 
-                    appDomainId: userAppDomain.appDomainId
+                clove.db.UserAppDomainClaim.findOne({where: {
+                    claimId: userAppDomainClaim.claimId, 
+                    userAppDomainId: userAppDomainClaim.userAppDomainId
                 }})
                     .then(function(u) {
                         if (u) {
-                            errors.user_id = "User already associated with this app domain";
+                            errors.user_id = "Claim already assigned to this user";
                         }
                         cb(null, clove.utils.equals(errors, {}) ? null : errors); 
                     }, bail);
@@ -51,5 +50,5 @@ module.exports = function (sequelize, DataTypes) {
     
     
     
-    return UserAppDomain;
+    return UserAppDomainClaim;
 };
