@@ -129,4 +129,22 @@ describe("Claims API", function () {
         });
     });
 
+    it("should list claims for specified app domain and user", function(done) {
+        GetToken("administrator", "administrator", function(token){
+            request.get({
+                url: host + "/api/user/1/appdomain/1/claims",
+                json: { },
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "claims by specific app domain and user response status code must be 200");
+                assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain claims for specified app domain and user");
+                
+                done();
+            });
+        });
+    });
+
 });

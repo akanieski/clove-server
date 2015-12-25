@@ -95,6 +95,16 @@ clove.async.series([
         });
         
     },
+    function (next) {
+        
+        clove.db.UserAppDomainClaim.findOrCreate({where: {
+            userAppDomainId: 1, 
+            claimId: 1
+        }}).then(function(){
+            next();
+        });
+        
+    },
     function() {
         console.log("[Done Loading Seed Data]");
     }

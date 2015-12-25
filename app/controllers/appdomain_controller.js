@@ -4,6 +4,48 @@ module.exports = function AppDomainController(app) {
     var db = clove.db,
         Controller = this;
     
+    Controller.getAppDomainsByUser = function getAppDomainsByUser(req ,res, next) {
+        var bail = function(err, code) {
+            console.log(arguments);
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        db.User.findById(req.params.userId).then(function(user){
+            if (!user) {
+                bail("Could not find user " + req.params.userId, 404);
+                return;
+            }
+            db.AppDomain.findAll({include: [{as: "userAppDomains", model: db.UserAppDomain, where: {userId: req.params.userId}}]})
+                .then(function(appDomains){
+                    res.status(200).send({data: appDomains, success: true}); 
+                }).catch(bail);
+        }).catch(bail);
+        
+    };
+    
+    Controller.getAppDomainByUser = function getAppDomainByUser(req ,res, next) {
+        var bail = function(err, code) {
+            console.log(arguments);
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        db.User.findById(req.params.userId).then(function(user){
+            if (!user) {
+                bail("Could not find user " + req.params.userId, 404);
+                return;
+            }
+            db.AppDomain.findAll({include: [{as: "userAppDomains", model: db.UserAppDomain, where: {userId: req.params.userId, appDomainId: req.params.appDomainId}}]})
+                .then(function(appDomain){
+                    if (!appDomain) {
+                        bail("Specified app domain not found for given user", 404);
+                        return;
+                    }
+                    res.status(200).send({data: appDomain, success: true}); 
+                }).catch(bail);
+        }).catch(bail);
+        
+    };
+    
     Controller.createAppDomain = function createAppDomain(req, res, next) {
         var bail = function(err, code) {
             res.status(code || 500).send({error: err, success: false});
@@ -74,5 +116,7 @@ module.exports = function AppDomainController(app) {
     
     app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
     app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
+    app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
+    app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
     
 };

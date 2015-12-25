@@ -91,7 +91,7 @@ module.exports = {
                 });
             }, 
             function(next){
-                migration.createTable("tbl_userclaims", {
+                migration.createTable("tbl_userappdomainclaims", {
                     id: {
                         type: DataTypes.BIGINT,
                         autoIncrement: true,

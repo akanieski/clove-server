@@ -41,6 +41,42 @@ describe("App Domain API", function () {
             });
         });
     });
+
+    it("should list app domains by user", function(done) {
+        GetToken("administrator", "administrator", function(token){
+            request.get({
+                url: host + "/api/user/1/appdomains",
+                json: { },
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "app domains by user response status code must be 200");
+                assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain list of app domains");
+                
+                done();
+            });
+        });
+    });
+
+    it("should get specified app domain from user", function(done) {
+        GetToken("administrator", "administrator", function(token){
+            request.get({
+                url: host + "/api/user/1/appdomain/1",
+                json: { },
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "specific app domain by user response status code must be 200");
+                assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain specified app domain");
+                
+                done();
+            });
+        });
+    });
     
     it("should get existing app domain", function(done) {
         GetToken("administrator","administrator",function(token){

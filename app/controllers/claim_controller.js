@@ -87,9 +87,35 @@ module.exports = function ClaimsController(app) {
             .catch(bail);
     };
     
+    Controller.getClaimsByAppDomainAndUser = function getClaimsByAppDomainAndUser(req ,res, next) {
+        var bail = function(err, code) {
+            console.log(arguments);
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        db.User.findById(req.params.userId).then(function(user){
+            if (!user) {
+                bail("Could not find user " + req.params.userId, 404);
+                return;
+            }
+            db.UserAppDomain.findOne({include: {as: "claims", model: db.Claim}, where: {userId: req.params.userId, appDomainId: req.params.appDomainId} })
+                .then(function(userAppDomain){
+                    if (!userAppDomain) {
+                        bail("Specified app domain not found for given user", 404);
+                        return;
+                    }
+                    
+                    res.status(200).send({data: userAppDomain.claims, success: true});     
+                    
+                }).catch(bail);
+        }).catch(bail);
+        
+    };
+    
     app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
     app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
     app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
     app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
+    app.get("/api/user/:userId/appdomain/:appDomainId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
     
 };
