@@ -2,6 +2,7 @@
 /* global clove */
 module.exports = function ClaimsController(app) {
     var db = clove.db,
+        async = require('async'),
         Controller = this;
     
     Controller.getClaim = function getClaim(req, res, next) {
@@ -112,10 +113,88 @@ module.exports = function ClaimsController(app) {
         
     };
     
-    app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
-    app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
+    Controller.addClaimToAppDomainAndUser = function addClaimToAppDomainAndUser(req ,res, next) {
+        var bail = function(err, code) {
+            if (typeof err != 'string') err = err.toString();
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        // Make database checks in parallel for performance advantages
+        async.parallel({
+            // Check to make sure user exists
+            checkUserExists: function checkUserExists(next) {
+                db.User.findById(req.params.userId).then(function(user){
+                    if (!user) {
+                        bail("Could not find user specified", 404);
+                        next(null, false);
+                    } else {
+                        next(null, user);
+                    }
+                }).catch(function(err){bail(err, 500);});
+            },
+            
+            // Check to make sure claim exists
+            checkClaimExists: function checkClaimExists(next) {
+                db.Claim.findById(req.params.claimId).then(function(claim){
+                    if (!claim) {
+                        bail("Could not find claim specified", 404);
+                        next(null, false);
+                    } else {
+                        next(null, claim);
+                    }
+                }).catch(function(err){bail(err, 500);});
+            },
+            
+            // Check to make sure app domain exists
+            checkUserAppDomainExists: function checkUserAppDomainExists(next) {
+                db.UserAppDomain.findById(req.params.userAppDomainId).then(function(userAppDomain){
+                    if (!userAppDomain) {
+                        bail("Could not find app domain specified for given user", 404);
+                        next(null, false);
+                    } else {
+                        next(null, userAppDomain);
+                    }
+                }).catch(function(err){bail(err, 500);});
+            },
+            
+        }, function(err, results){
+            if (results.checkUserExists && results.checkClaimExists && results.checkUserAppDomainExists) {
+                db.UserAppDomainClaim.create({
+                    userAppDomainId: results.checkUserAppDomainExists.id,
+                    claimId: results.checkClaimExists.id
+                }).then(function(){
+                    res.status(200).send({success:true});
+                }).catch(function(err){bail(err, 500);});
+            }
+        });
+        
+    };
+    
+    Controller.removeClaimFromUserAppDomain = function removeClaimFromUserAppDomain(req, res, next) {
+        
+        var bail = function(err, code) {
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        db.UserAppDomainClaim.findById(req.params.claimId).then(function(claim){
+            if (!claim) {
+                bail("Could not locate specified claim for the given user app domain", 404);
+            } else {
+                claim.destroy().then(function(){
+                    res.status(200).send({success: true});
+                }).catch(function(err){bail(err, 500);});
+            }
+        });
+                
+                
+    };
+    
     app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
     app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
     app.get("/api/user/:userId/appdomain/:appDomainId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
+    app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
+    app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
+    app.post("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.addClaimToAppDomainAndUser));
+    app.delete("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.removeClaimFromUserAppDomain));
     
 };

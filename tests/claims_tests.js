@@ -147,4 +147,40 @@ describe("Claims API", function () {
         });
     });
 
+    it("should add claim for specified app domain to user", function(done) {
+        GetToken("administrator", "administrator", function(token){
+            request.post({
+                url: host + "/api/user/1/appdomain/1/claim/2",
+                json: { },
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
+                assert.equal(body.success, true, "response should contain claims for specified app domain and user");
+                
+                done();
+            });
+        });
+    });
+
+    it("should remove claim from specified user for specified app domain", function(done) {
+        GetToken("administrator", "administrator", function(token){
+            request.del({
+                url: host + "/api/user/1/appdomain/1/claim/2",
+                json: { },
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                console.log(err || resp.body);
+                assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
+                assert.equal(body.success, true, "response should contain claims for specified app domain and user");
+                
+                done();
+            });
+        });
+    });
+
 });

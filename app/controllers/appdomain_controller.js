@@ -86,9 +86,10 @@ module.exports = function AppDomainController(app) {
     
     Controller.getAppDomain = function getAppDomain(req, res, next) {
         var bail = function(err, code) {
-            res.status(code || 500).send({error: err, success: false});
-        };
-        var query = {appDomainId: req.params.id};
+                res.status(code || 500).send({error: err, success: false});
+            },
+            query = {appDomainId: req.params.id};
+        
         // if jwt claims allow it ... then return the app domain regardles of whether the user
         // owns it.
         if (req.session.claims.indexOf('sysadmin') > -1) {
