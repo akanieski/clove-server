@@ -11,13 +11,13 @@ module.exports = function AppDomainController(app) {
             res.status(code || 500).send({error: err, success: false});
         };
         
-        db.User.findById(req.params.userId).then(function(user){
+        db.User.findById(req.params.userId).then(function(user) {
             if (!user) {
                 bail("Could not find user " + req.params.userId, 404);
                 return;
             }
             db.AppDomain.findAll({include: [{as: "userAppDomains", model: db.UserAppDomain, where: {userId: req.params.userId}}]})
-                .then(function(appDomains){
+                .then(function(appDomains) {
                     res.status(200).send({data: appDomains, success: true}); 
                 }).catch(bail);
         }).catch(bail);
@@ -30,13 +30,13 @@ module.exports = function AppDomainController(app) {
             res.status(code || 500).send({error: err, success: false});
         };
         
-        db.User.findById(req.params.userId).then(function(user){
+        db.User.findById(req.params.userId).then(function(user) {
             if (!user) {
                 bail("Could not find user " + req.params.userId, 404);
                 return;
             }
             db.AppDomain.findAll({include: [{as: "userAppDomains", model: db.UserAppDomain, where: {userId: req.params.userId, appDomainId: req.params.appDomainId}}]})
-                .then(function(appDomain){
+                .then(function(appDomain) {
                     if (!appDomain) {
                         bail("Specified app domain not found for given user", 404);
                         return;
@@ -52,7 +52,7 @@ module.exports = function AppDomainController(app) {
             res.status(code || 500).send({error: err, success: false});
         };
         
-        db.User.findById(req.session.userId).then(function(user){
+        db.User.findById(req.session.userId).then(function(user) {
             if (user) {
                 if (!user.active) {
                     bail("User account is not active", 401);
@@ -67,12 +67,12 @@ module.exports = function AppDomainController(app) {
                     include: [
                         {
                             model: db.AppDomain,
-                            as: 'appDomain'
+                            as: "appDomain"
                         }
                     ]
                 })
-                    .then(function(appDomain){
-                        appDomain.setUser(user).then(function(){
+                    .then(function(appDomain) {
+                        appDomain.setUser(user).then(function() {
                             res.status(200).send({success: true, data: appDomain});
                         });
                     })
@@ -93,23 +93,23 @@ module.exports = function AppDomainController(app) {
         
         // if jwt claims allow it ... then return the app domain regardles of whether the user
         // owns it.
-        if (req.session.claims.indexOf('sysadmin') > -1) {
+        if (req.session.sysadmin) {
             query.userId = req.session.userId;
         }
         db.UserAppDomain.findOne({
             where: query, 
             include: [{
                 model: db.AppDomain,
-                as: 'appDomain'
+                as: "appDomain"
             }]
         })
-            .then(function(userAppDomain){
+            .then(function(userAppDomain) {
                 if (userAppDomain) {
                     res.status(200).send({data: userAppDomain.appDomain, success: true});  
                 } else {
                     bail("Not authorized", 401);
                 }
-            })
+            }).catch(function(err){bail(err.toString(), 500);});
     };
     
     
@@ -121,7 +121,7 @@ module.exports = function AppDomainController(app) {
         var appDomain, user;
         async.series([
             function(next) {
-                db.User.findById(req.params.userId).then(function(_user){
+                db.User.findById(req.params.userId).then(function(_user) {
                     user = _user;
                     if (!user) {
                         bail("Could not find specified user", 404);
@@ -131,7 +131,7 @@ module.exports = function AppDomainController(app) {
                 });
             },
             function(next) {
-                db.AppDomain.findById(req.params.appDomainId).then(function(_appDomain){
+                db.AppDomain.findById(req.params.appDomainId).then(function(_appDomain) {
                     appDomain = _appDomain;
                     if (!_appDomain) {
                         bail("Could not find specified app domain", 404);
@@ -140,12 +140,12 @@ module.exports = function AppDomainController(app) {
                     }
                 });
             }
-        ], function(){
+        ], function() {
             if (user && appDomain) {
                 db.UserAppDomain.create({
                     userId: user.id,
                     appDomainId: appDomain.id
-                }).then(function(){
+                }).then(function() {
                     res.status(200).send({success: true});
                 });
             }

@@ -11,7 +11,7 @@
     "disallowSpaceAfterPrefixUnaryOperators": true,
     
     "disallowSpacesInsideParentheses": true,
-    "maximumLineLength": 120,
+    "maximumLineLength": 240,
     "requireCurlyBraces": ["catch", "do", "else", "finally", "for", "if", "try", "while"],
     "requireSpaceAfterKeywords": [
         "if",

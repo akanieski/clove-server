@@ -22,14 +22,14 @@ function GetToken(username, password, next) {
 describe("App Domain API", function () {
 
     it("should post new app domain", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.post({
                 url: host + "/api/appdomain",
                 json: {
                     name: "Test App Domain 2",
                 },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -43,12 +43,12 @@ describe("App Domain API", function () {
     });
 
     it("should list app domains by user", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/user/1/appdomains",
                 json: { },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -61,12 +61,12 @@ describe("App Domain API", function () {
     });
 
     it("should get specified app domain from user", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/user/1/appdomain/1",
                 json: { },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -79,12 +79,12 @@ describe("App Domain API", function () {
     });
     
     it("should get existing app domain", function(done) {
-        GetToken("administrator","administrator",function(token){
+        GetToken("administrator","administrator",function(token) {
             request.get({
                 url: host + "/api/appdomain/1",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -97,12 +97,12 @@ describe("App Domain API", function () {
     });
     
     it("should not get existing app domain of another user", function(done) {
-        GetToken("administrator2","administrator",function(token){
+        GetToken("administrator2","administrator",function(token) {
             request.get({
                 url: host + "/api/appdomain/1",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -128,12 +128,12 @@ describe("App Domain API", function () {
     });
     
     it("should add app domain to user", function(done) {
-        GetToken("administrator", "administrator",function(token){
+        GetToken("administrator", "administrator",function(token) {
             request.post({
                 url: host + "/api/user/1/appdomain/3",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 

@@ -1,4 +1,5 @@
-﻿/* global clove */
+﻿/* global . */
+/* global clove */
 /* global clove */
 module.exports = function AuthController(app) {
     
@@ -28,20 +29,37 @@ module.exports = function AuthController(app) {
      */
     Controller.authenticate = function authenticate(request, response, next) {
         
-        var q = db.User.findAll({
+        var q = db.User.findOne({
             where: {
                 active: true, 
                 username: request.body.username, 
                 password: clove.utils.encrypt(request.body.password)
-            }
+            },
+            include: [
+                {
+                    model: db.UserAppDomain,
+                    as: "userAppDomains",
+                    include: [
+                        {
+                            model: db.AppDomain,
+                            as: "appDomain"
+                        },
+                        {
+                            model: db.Claim,
+                            as: "claims"
+                        }
+                    ]
+                }
+            ]
         });
 
-        q.then(function (results) {
-            if (results && results.length > 0) {
+        q.then(function (user) {
+            if (user) {                
                 var token = jwt.sign({
-                    userId: results[0].id,
-                    username: results[0].username,
-                    claims: [],
+                    userId: user.id,
+                    sysadmin: user.sysadmin,
+                    username: user.username,
+                    userAppDomains: user.userAppDomains,
                 }, clove.config.secret, {issuer: require("os").hostname()});
                 response.status(200).send({ token: token });
             } else {
@@ -49,6 +67,7 @@ module.exports = function AuthController(app) {
             }
 
         }).catch(function (err) {
+            console.log(err.stack);
             response.status(500).send({ error: "Server error.", detail: err });
         });
 

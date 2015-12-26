@@ -62,8 +62,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask("wipe", function () {
-        var clove = require('./app/core');
-        if (clove.config.dialect == 'sqlite') {
+        var clove = require("./app/core");
+        if (clove.config.dialect == "sqlite") {
             var fs = require("fs");
             if (fs.existsSync(path.resolve(clove.config.storage))) {
                 fs.unlinkSync(path.resolve(clove.config.storage));

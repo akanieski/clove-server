@@ -11,8 +11,8 @@ module.exports = function SystemController(app) {
         next();
     });
 
-    app.get("/", function defaultRoute(req, res){
-       res.send("OK"); 
+    app.get("/", function defaultRoute(req, res) {
+        res.send("OK"); 
     });
 
     app.get("/api/status", clove.middleware.authorize({}, function apiStatus(req, res) {

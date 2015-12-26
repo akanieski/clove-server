@@ -15,9 +15,9 @@ clove.async.series([
                     active: 1
                 });
                 
-                user.save().then(function(){
+                user.save().then(function() {
                     next();
-                }).catch(function(err){
+                }).catch(function(err) {
                     console.log(err);
                     next();
                 });
@@ -36,7 +36,7 @@ clove.async.series([
                     password: clove.utils.encrypt("administrator"),
                     email: "andrew.legacy@gmail.com",
                     active: 0
-                }).save().then(function(){next();}).catch(function(e){
+                }).save().then(function() {next();}).catch(function(e) {
                     console.log(e);
                     next();
                 });
@@ -50,11 +50,11 @@ clove.async.series([
         clove.db.AppDomain.findOne({where: {name: "Test App Domain"}}).then(function(appDomain) {
             if (!appDomain) {
                 console.log("Creating AppDomain seeds");
-                clove.db.User.findOne({where: {username: "administrator"}}).then(function(user){
+                clove.db.User.findOne({where: {username: "administrator"}}).then(function(user) {
                     clove.db.AppDomain.create({
                         name: "Test App Domain"
-                    }).then(function(appDomain){
-                        appDomain.addUser(user).then(function(){
+                    }).then(function(appDomain) {
+                        appDomain.addUser(user).then(function() {
                             next();
                         });
                     });
@@ -68,14 +68,14 @@ clove.async.series([
     function(next) {
         clove.db.AppDomain.findOrCreate({where: {
             name: "East London Company", 
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
     },
     function(next) {
         clove.db.AppDomain.findOrCreate({where: {
             name: "West London Company", 
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
     },
@@ -84,7 +84,7 @@ clove.async.series([
         clove.db.Claim.findOrCreate({where: {
             name: "Domain Administrator", 
             description: "Complete access to all elements of the domain"
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
         
@@ -94,7 +94,7 @@ clove.async.series([
         clove.db.Claim.findOrCreate({where: {
             name: "Domain Manager", 
             description: "Management access to all elements of the domain"
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
         
@@ -104,7 +104,7 @@ clove.async.series([
         clove.db.Claim.findOrCreate({where: {
             name: "Domain User", 
             description: "Basic access to all elements of the domain"
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
         
@@ -114,7 +114,7 @@ clove.async.series([
         clove.db.UserAppDomainClaim.findOrCreate({where: {
             userAppDomainId: 1, 
             claimId: 1
-        }}).then(function(){
+        }}).then(function() {
             next();
         });
         

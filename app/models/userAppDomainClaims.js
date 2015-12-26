@@ -16,8 +16,8 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                UserAppDomainClaim.belongsTo(models.Claim, {foreignKey: 'claimId', as: "claim"});
-                UserAppDomainClaim.belongsTo(models.UserAppDomain, {foreignKey: 'userAppDomainId', as: "userAppDomain"});
+                UserAppDomainClaim.belongsTo(models.Claim, {foreignKey: "claimId", as: "claim"});
+                UserAppDomainClaim.belongsTo(models.UserAppDomain, {foreignKey: "userAppDomainId", as: "userAppDomain"});
             }
         },
         instanceMethods: {

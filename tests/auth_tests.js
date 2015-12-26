@@ -4,6 +4,7 @@
 /* global clove */
 var request = require("request");
 var assert = require("assert");
+var atob = require("atob");
 global.clove = require("../app/core");
 var host = (clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port;
 
@@ -66,7 +67,7 @@ describe("Token Authentication API", function () {
         });
     });
     describe("api/auth", function () {
-        it("should provide a token with correct credentials", function (done) {
+        it("should provide a proper token when given correct credentials", function (done) {
             request.post({
                 url: host + "/api/auth",
                 json: {
@@ -76,6 +77,18 @@ describe("Token Authentication API", function () {
             }, function (err, resp, body) {
                 assert.equal(resp.statusCode, 200, "login response status code must be 200");
                 assert.equal(body.token !== "undefined" && body.token !== null, true);
+                var payload = JSON.parse(atob(body.token.split('.')[1]));
+                
+                assert.notEqual(payload, null);
+                assert.notEqual(payload.userAppDomains, null);
+                assert.notEqual(payload.userAppDomains.length, 0);
+                assert.notEqual(payload.userAppDomains[0].appDomain, null);
+                assert.notEqual(payload.userAppDomains[0].claims, null);
+                assert.notEqual(payload.userAppDomains[0].claims.length, 0);
+                assert.notEqual(payload.userAppDomains[0].claims[0], null);
+                assert.notEqual(payload.userAppDomains[0].claims[0].id, null);
+                assert.notEqual(payload.userAppDomains[0].claims[0].name, null);
+                
                 done();
             });
         });

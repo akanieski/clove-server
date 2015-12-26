@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
+    "atob": "^2.0.0",
     "body-parser": "^1.14.1",
     "colors": "^1.1.2",
     "ejs": "^2.3.4",

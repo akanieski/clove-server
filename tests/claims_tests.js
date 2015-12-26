@@ -22,12 +22,12 @@ function GetToken(username, password, next) {
 describe("Claims API", function () {
 
     it("should get existing claim", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/claim/1",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -40,12 +40,12 @@ describe("Claims API", function () {
     });
 
     it("should not get non-existent claim", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/claim/0",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -58,12 +58,12 @@ describe("Claims API", function () {
     });
 
     it("should get existing claims", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/claims",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -76,12 +76,12 @@ describe("Claims API", function () {
     });
 
     it("should update existing claim", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/claim/1",
                 json: {},
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, data) {
                 var newData = {
@@ -92,7 +92,7 @@ describe("Claims API", function () {
                     url: host + "/api/claim/1",
                     json: newData,
                     headers: {
-                        "Authorization": "Bearer " + token
+                        Authorization: "Bearer " + token
                     }
                 }, function (err, resp, body) {
                     
@@ -108,7 +108,7 @@ describe("Claims API", function () {
     });
 
     it("should create new claim", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.post({
                 url: host + "/api/claim",
                 json: {
@@ -116,7 +116,7 @@ describe("Claims API", function () {
                     description: "Test Claim"
                 },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -130,12 +130,12 @@ describe("Claims API", function () {
     });
 
     it("should list claims for specified app domain and user", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.get({
                 url: host + "/api/user/1/appdomain/1/claims",
                 json: { },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -148,12 +148,12 @@ describe("Claims API", function () {
     });
 
     it("should add claim for specified app domain to user", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.post({
                 url: host + "/api/user/1/appdomain/1/claim/2",
                 json: { },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
@@ -166,12 +166,12 @@ describe("Claims API", function () {
     });
 
     it("should remove claim from specified user for specified app domain", function(done) {
-        GetToken("administrator", "administrator", function(token){
+        GetToken("administrator", "administrator", function(token) {
             request.del({
                 url: host + "/api/user/1/appdomain/1/claim/2",
                 json: { },
                 headers: {
-                    "Authorization": "Bearer " + token
+                    Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 

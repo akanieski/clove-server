@@ -34,11 +34,13 @@ if (!module.parent) {
             key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
             cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
         }, app).listen(clove.config.endpoint_port, function() {
-            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", 
+                        clove.config.endpoint_port);
         });
     } else {
         clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
-            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", 
+                        clove.config.endpoint_port);
         });
     }
 } else {
