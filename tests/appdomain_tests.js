@@ -126,5 +126,23 @@ describe("App Domain API", function () {
             done();
         });
     });
+    
+    it("should add app domain to user", function(done) {
+        GetToken("administrator", "administrator",function(token){
+            request.post({
+                url: host + "/api/user/1/appdomain/3",
+                json: {},
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "add app domain response status code must be 401");
+                assert.equal(body.success, true, "response should be successful");
+
+                done();
+            });
+        });
+    });
 
 });

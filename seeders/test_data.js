@@ -65,6 +65,20 @@ clove.async.series([
             }
         });
     },
+    function(next) {
+        clove.db.AppDomain.findOrCreate({where: {
+            name: "East London Company", 
+        }}).then(function(){
+            next();
+        });
+    },
+    function(next) {
+        clove.db.AppDomain.findOrCreate({where: {
+            name: "West London Company", 
+        }}).then(function(){
+            next();
+        });
+    },
     function (next) {
         console.log("Creating claim seeds");
         clove.db.Claim.findOrCreate({where: {

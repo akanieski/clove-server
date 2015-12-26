@@ -2,6 +2,7 @@
 /* global clove */
 module.exports = function AppDomainController(app) {
     var db = clove.db,
+        async = require("async"),
         Controller = this;
     
     Controller.getAppDomainsByUser = function getAppDomainsByUser(req ,res, next) {
@@ -112,12 +113,50 @@ module.exports = function AppDomainController(app) {
     };
     
     
-    
+    Controller.addUserToAppDomain = function(req, res, next) {
+        var bail = function(err, code) {
+            res.status(code || 500).send({error: err, success: false});
+        };
+        
+        var appDomain, user;
+        async.series([
+            function(next) {
+                db.User.findById(req.params.userId).then(function(_user){
+                    user = _user;
+                    if (!user) {
+                        bail("Could not find specified user", 404);
+                    } else {
+                        next();
+                    }
+                });
+            },
+            function(next) {
+                db.AppDomain.findById(req.params.appDomainId).then(function(_appDomain){
+                    appDomain = _appDomain;
+                    if (!_appDomain) {
+                        bail("Could not find specified app domain", 404);
+                    } else {
+                        next();
+                    }
+                });
+            }
+        ], function(){
+            if (user && appDomain) {
+                db.UserAppDomain.create({
+                    userId: user.id,
+                    appDomainId: appDomain.id
+                }).then(function(){
+                    res.status(200).send({success: true});
+                });
+            }
+        });
+    };
     
     
     app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
     app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
     app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
     app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
+    app.post("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.addUserToAppDomain));
     
 };
