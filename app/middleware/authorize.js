@@ -16,6 +16,8 @@
 */
 module.exports = (function () {
     var jwt = require("jsonwebtoken");
+    var _ = require('lodash');
+    var async = require('async');
     
     return function _processJWT(options, action) {
         if (typeof options == "function") {
@@ -23,31 +25,85 @@ module.exports = (function () {
             options = {};
         }
         return function processJWT(request, response, next) {
+            var bail = function(err, code) {
+                response.status(code || 500).send({error: err, success: false});
+            };
+            
             if (request.headers.authorization && 
                 request.headers.authorization.indexOf("Bearer ") > -1 && 
                 request.headers.authorization.split(" ")[1]) {
                 var token = request.headers.authorization.split(" ")[1];
-                var valid = false;
-                var errMessage = "Token invalid";
                 try {
-                    valid = jwt.verify(token, clove.config.secret);
+                    if (!jwt.verify(token, clove.config.secret)) {
+                        bail("Token invalid", 401);
+                        return;
+                    }
                 } catch (err) {
                     if (err instanceof jwt.TokenExpiredError) {
-                        valid = false;
-                        errMessage = "Token has expired. Please try again.";
+                        bail("Token has expired. Please try again.", 401);
+                        return;
                     }
                 }
-                if (valid) {
-                    request.session = jwt.decode(token);
-                    action(request, response, next);
-                } else {
-                    response.status(401).send({ error: errMessage, success: false});
+                var payload = jwt.decode(token);
+                if (!payload) {
+                    console.log(">>>>>>>>>>");
+                    console.log(request.headers.authorization);
+                    bail("Token invalid", 400);
+                    return;
                 }
-                        
-            } else {
-                response.status(401).send({ error: "Token not authorized", body: request.body, success: false, url: request.url, headers: request.headers });    
-            }
                 
+                var appDomainMatch = null;
+                
+                async.series([
+                    
+                    function checkAppDomainAccess(next) {
+                        if (!payload.sysadmin && (options.domainAccess || options.allowedClaims)) {
+                            // App domain is required to determine if user has access to given app domain
+                            var appDomainField = "appDomainId";
+                            if (typeof options.domainAccess === 'string') {
+                                appDomainField = typeof options.domainAccess;
+                            }
+                            if (!request.params[appDomainField]) {
+                                bail("App domain not specified", 401);
+                                return;
+                            }
+                            request.params[appDomainField] = parseInt(request.params[appDomainField], 10);
+                            appDomainMatch = _.findWhere(payload.userAppDomains, {'appDomainId': request.params[appDomainField]});
+                            
+                            if (!appDomainMatch) {
+                                bail("User has no access to the app domain specified", 401);
+                                return;
+                            }
+                        }
+                        next();
+                    },
+
+                    function checkClaimsAccess(next) {
+                        // Check claims to make sure user has access to resource endpoint
+                        if (!payload.sysadmin && options.allowedClaims) {
+                            
+                            if (_.filter(options.allowedClaims, function(claim){
+                                return _.filter(appDomainMatch.claims,function(_claim) {
+                                    return _claim.id == claim.id;
+                                });
+                            }).length == 0) {
+                                bail("User not authorized to access this endpoint for given app domain", 401);
+                                return;
+                            }
+                            
+                        }
+                        next();
+                    }
+                    
+                ], function() {
+                    request.session = payload;
+                    action(request, response, next);
+                });
+                
+            } else {
+                bail("Token not authorized", 401);
+            }
+
         };
     };
 })();

@@ -189,12 +189,19 @@ module.exports = function ClaimsController(app) {
                 
     };
     
-    app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
-    app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
-    app.get("/api/user/:userId/appdomain/:appDomainId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
-    app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
-    app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
-    app.post("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.addClaimToAppDomainAndUser));
-    app.delete("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.removeClaimFromUserAppDomain));
-    
+    db.Claim.cache().then(function(claims){
+        //General Endpoints
+        app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
+        app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
+        
+        // Sys-Admin endpoints
+        app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
+        app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
+        
+        app.get("/api/user/:userId/appdomain/:appDomainId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
+        
+        // Domain Admin endpoints
+        app.post("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.addClaimToAppDomainAndUser));
+        app.delete("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.removeClaimFromUserAppDomain));
+    });
 };

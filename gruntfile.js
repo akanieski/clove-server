@@ -92,50 +92,54 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["serve:start", "watch"]);
     grunt.registerTask("build", ["jshint", "jscs"]);
     grunt.registerTask("test", [
-        "wipe", 
-        "shell:migrate", 
-        "shell:seed", 
-        "serve:start", 
-        "wait",  
-        "mochaTest",  
+        "wipe",
+        "shell:migrate",
+        "shell:seed",
+        "serve:start",
+        "wait",
+        "mochaTest",
         "serve:stop"
     ]);
 
 
     
     grunt.registerTask("serve:start", "Start server", function() {
-        console.log(global.clove !== undefined ? "Existing server instance located": "No Server Instance Found");
-        
-        var done = this.async();
-        var startup = function() {
-            console.log("Starting Clove Server...");
-            clearCache();
-            var app = require("./app.js");
-            var http = clove.config.ssl ? require("https") : require("http");
-            if (clove.config.ssl) {
-                clove._server = http.createServer({
-                    key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
-                    cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
-                }, app).listen(clove.config.endpoint_port, function() {
-                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
-                    done();
-                });
+        if (!process.env.testing_host) {
+            var done = this.async();
+            console.log(global.clove !== undefined ? "Existing server instance located": "No Server Instance Found");
+            
+            var startup = function() {
+                console.log("Starting Clove Server...");
+                clearCache();
+                var app = require("./app.js");
+                var http = clove.config.ssl ? require("https") : require("http");
+                if (clove.config.ssl) {
+                    clove._server = http.createServer({
+                        key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
+                        cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
+                    }, app).listen(clove.config.endpoint_port, function() {
+                        console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+                        setTimeout(done, 1000);
+                    });
+                } else {
+                    clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
+                        console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
+                        setTimeout(done, 1000);
+                    });
+                }
+            };
+            
+            if (global.clove !== undefined) {
+                console.log("Stopping Clove Server...");
+                console.log(clove._server.close);
+                clove._server.close();
+                clearCache();
+                startup();
             } else {
-                clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
-                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", clove.config.endpoint_port);
-                    done();
-                });
+                startup();
             }
-        };
-        
-        if (global.clove !== undefined) {
-            console.log("Stopping Clove Server...");
-            console.log(clove._server.close);
-            clove._server.close();
-            clearCache();
-            startup();
         } else {
-            startup();
+            console.log("Testing host has been set: " + process.env.testing_host);
         }
     });
     

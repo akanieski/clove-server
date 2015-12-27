@@ -3,6 +3,8 @@
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
+    var claimsCache = null;
+    var Promise = require('promise');
     var Claim = sequelize.define("Claim", {
         name: {
             type: DataTypes.STRING,
@@ -35,7 +37,31 @@ module.exports = function (sequelize, DataTypes) {
         }
     });
     
-    
+    Claim.cache = function() {
+        return new Promise(function(resolve, reject) {
+            if (!claimsCache) {
+                Claim.findAll().then(function(claims){
+                    var _tempCache = {};
+                    claims.forEach(function(claim){
+                        if (claim.name.toLowerCase().indexOf("admin") > -1 &&
+                            claim.name.toLowerCase().indexOf("domain") > -1) {
+                            _tempCache.DOMAIN_ADMINS = claim;
+                        } else if (claim.name.toLowerCase().indexOf("manager") > -1 &&
+                            claim.name.toLowerCase().indexOf("domain") > -1) {
+                            _tempCache.DOMAIN_MANAGERS = claim;
+                        } else if (claim.name.toLowerCase().indexOf("user") > -1 &&
+                            claim.name.toLowerCase().indexOf("domain") > -1) {
+                            _tempCache.DOMAIN_USERS = claim;
+                        }
+                    });
+                    claimsCache = _tempCache;
+                    resolve(claimsCache);
+                }).catch(reject);
+            } else {
+                resolve(claimsCache);
+            }
+        });
+    };
     
     return Claim;
 };

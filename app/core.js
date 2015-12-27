@@ -17,7 +17,9 @@ module.exports = function () {
     
     core.config.endpoint_port = process.env.PORT || core.config.endpoint_port || 3000;
     
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = core.config.ssl ? "0" : "1";
+    //process.env.NODE_TLS_REJECT_UNAUTHORIZED = core.config.ssl ? "0" : "1";
+    
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     
     core.utils = require("./utils")(core.config.secret);
 

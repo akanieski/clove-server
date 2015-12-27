@@ -6,7 +6,8 @@ var request = require("request");
 var assert = require("assert");
 global.clove = require("../app/core");
 
-var host = (clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port;
+var host = process.env.testing_host || ((clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port);
+console.log(">>>>>>>>>>" + host);
 function GetToken(username, password, next) {
     request.post({
         url: host + "/api/auth",
@@ -15,32 +16,12 @@ function GetToken(username, password, next) {
             password: password
         }
     }, function (err, resp, body) {
+        assert.equal(err, null);
         next(body.token);
     });
 }
 
 describe("App Domain API", function () {
-
-    it("should post new app domain", function(done) {
-        GetToken("administrator", "administrator", function(token) {
-            request.post({
-                url: host + "/api/appdomain",
-                json: {
-                    name: "Test App Domain 2",
-                },
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            }, function (err, resp, body) {
-                
-                assert.equal(resp.statusCode, 200, "new app domain response status code must be 200");
-                assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain new app domain");
-                assert.equal(body.data.userId > 0 , true, "new app domain should be created under the current user");
-                
-                done();
-            });
-        });
-    });
 
     it("should list app domains by user", function(done) {
         GetToken("administrator", "administrator", function(token) {
@@ -96,24 +77,6 @@ describe("App Domain API", function () {
         });
     });
     
-    it("should not get existing app domain of another user", function(done) {
-        GetToken("administrator2","administrator",function(token) {
-            request.get({
-                url: host + "/api/appdomain/1",
-                json: {},
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            }, function (err, resp, body) {
-                
-                assert.equal(resp.statusCode, 401, "existing app domain response status code must be 401");
-                assert.equal(body.data, null, "response should contain new app domain");
-
-                done();
-            });
-        });
-    });
-    
     it("should not post new app domain if not authorized", function(done) {
         request.post({
             url: host + "/api/appdomain",
@@ -130,7 +93,7 @@ describe("App Domain API", function () {
     it("should add app domain to user", function(done) {
         GetToken("administrator", "administrator",function(token) {
             request.post({
-                url: host + "/api/user/1/appdomain/3",
+                url: host + "/api/appdomain/1/user/2",
                 json: {},
                 headers: {
                     Authorization: "Bearer " + token
@@ -140,6 +103,45 @@ describe("App Domain API", function () {
                 assert.equal(resp.statusCode, 200, "add app domain response status code must be 401");
                 assert.equal(body.success, true, "response should be successful");
 
+                done();
+            });
+        });
+    });
+    
+    it("should not add app domain to user if not authorized", function(done) {
+        GetToken("basicuser", "basicuser",function(token) {
+            request.post({
+                url: host + "/api/appdomain/1/user/4",
+                json: {},
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                console.log(err || resp.body);
+                assert.equal(resp.statusCode, 401, "add app domain response status code must be 401");
+                assert.equal(body.success, false, "response should be successful");
+
+                done();
+            });
+        });
+    });
+
+    it("should post new app domain", function(done) {
+        GetToken("administrator", "administrator", function(token) {
+            request.post({
+                url: host + "/api/appdomain",
+                json: {
+                    name: "Test App Domain 2",
+                },
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "new app domain response status code must be 200");
+                assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain new app domain");
+                assert.equal(body.data.userId > 0 , true, "new app domain should be created under the current user");
+                
                 done();
             });
         });

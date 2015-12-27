@@ -20,10 +20,13 @@ var ClaimsController = require("./app/controllers/claim_controller.js");
 var AppDomainController = require("./app/controllers/appdomain_controller.js");
 
 clove.middleware = require("./app/middleware");
-clove.controllers.system = new SystemController(app);
-clove.controllers.auth = new AuthController(app);
-clove.controllers.appdomain = new AppDomainController(app);
-clove.controllers.claims = new ClaimsController(app);
+
+clove.db.Claim.cache().then(function(claims){
+    clove.controllers.system = new SystemController(app);
+    clove.controllers.auth = new AuthController(app);
+    clove.controllers.appdomain = new AppDomainController(app);
+    clove.controllers.claims = new ClaimsController(app);
+})
 
 app.use(express.static("www"));
 
