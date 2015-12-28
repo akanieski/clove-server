@@ -1,4 +1,4 @@
-﻿/* global clove */
+/* global clove */
 /* jshint node: true */
 "use strict";
 
@@ -11,20 +11,30 @@ module.exports = function (sequelize, DataTypes) {
         email: DataTypes.STRING,
         active: {
             type: DataTypes.BOOLEAN,
-            defaultValue: 1   
+            defaultValue: 1
         },
     }, {
         tableName: "tbl_users",
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                User.belongsToMany(models.AppDomain, { as: "appDomains", through: models.UserAppDomain, foreignKey: "userId" });
-                User.hasMany(models.UserAppDomain, { as: "userAppDomains", foreignKey: "userId" });
-                User.belongsTo(models.AppDomain, { as: "defaultAppDomain", foreignKey: "defaultAppDomainId" });
+                User.belongsToMany(models.AppDomain, {
+                    as: "appDomains",
+                    through: models.UserAppDomain,
+                    foreignKey: "userId"
+                });
+                User.hasMany(models.UserAppDomain, {
+                    as: "userAppDomains",
+                    foreignKey: "userId"
+                });
+                User.belongsTo(models.AppDomain, {
+                    as: "defaultAppDomain",
+                    foreignKey: "defaultAppDomainId"
+                });
             }
         },
         instanceMethods: {
-            isValid: function(options, cb) {
+            isValid: function (options, cb) {
                 if (typeof options === "function") {
                     cb = options;
                     options = {
@@ -32,7 +42,9 @@ module.exports = function (sequelize, DataTypes) {
                     };
                 }
                 var user = this;
-                var bail = function(err) {cb(err);};
+                var bail = function (err) {
+                    cb(err);
+                };
                 var errors = {};
                 if (!user.firstName) {
                     errors.firstName = "First name is required";
@@ -52,18 +64,22 @@ module.exports = function (sequelize, DataTypes) {
                 if (clove.utils.check_password(this.password)) {
                     errors.password = clove.utils.check_password(this.password);
                 }
-                
+
                 if (options.confirmPassword && this.password !== options.confirmation) {
                     errors.password2 = "Password confirmation does not match";
                 }
-                
+
                 clove.async.series([
                     function CheckExistingUsername(done) {
                         if (errors.username) {
                             done();
                         } else {
-                            clove.db.User.findOne({where: {username: user.username}})
-                                .then(function(u) {
+                            clove.db.User.findOne({
+                                    where: {
+                                        username: user.username
+                                    }
+                                })
+                                .then(function (u) {
                                     if (u) {
                                         errors.username = "Username already in use";
                                     }
@@ -72,26 +88,30 @@ module.exports = function (sequelize, DataTypes) {
                         }
                     },
                     function CheckExistingEmail(done) {
-                        if (errors.email) { 
+                        if (errors.email) {
                             done();
                         } else {
-                            clove.db.User.findOne({where: {email: user.email}})
-                                .then(function(u) {
+                            clove.db.User.findOne({
+                                    where: {
+                                        email: user.email
+                                    }
+                                })
+                                .then(function (u) {
                                     if (u) {
                                         errors.email = "Email already in use";
                                     }
-                                    done(); 
+                                    done();
                                 }, bail);
                         }
                     }
-                ], function() {
-                    cb(null, clove.utils.equals(errors, {}) ? null : errors); 
+                ], function () {
+                    cb(null, clove.utils.equals(errors, {}) ? null : errors);
                 });
             }
         }
     });
-    
-    
-    
+
+
+
     return User;
 };

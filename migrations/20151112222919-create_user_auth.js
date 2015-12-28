@@ -38,7 +38,7 @@ module.exports = {
             console.log(arguments);
             done();
         });
-        
+
     },
     down: function (migration, DataTypes, done) {
         return migration.dropTable("tbl_users").done(done);

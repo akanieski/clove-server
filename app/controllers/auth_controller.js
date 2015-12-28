@@ -1,17 +1,17 @@
-﻿/* global . */
+/* global . */
 /* global clove */
 /* global clove */
 module.exports = function AuthController(app) {
-    
+
     var Controller = this,
         jwt = require("jsonwebtoken"),
         path = require("path"),
         EmailService = require("../services/email");
-    
+
     var db = clove.db;
-    
-    
-    
+
+
+
 
     /**
      * Authenticates provided username and password against database and initiates a new token
@@ -28,101 +28,111 @@ module.exports = function AuthController(app) {
      * }
      */
     Controller.authenticate = function authenticate(request, response, next) {
-        
+
         var q = db.User.findOne({
             where: {
-                active: true, 
-                username: request.body.username, 
+                active: true,
+                username: request.body.username,
                 password: clove.utils.encrypt(request.body.password)
             },
-            include: [
-                {
-                    model: db.UserAppDomain,
-                    as: "userAppDomains",
-                    include: [
-                        {
-                            model: db.AppDomain,
-                            as: "appDomain"
-                        },
-                        {
-                            model: db.Claim,
-                            as: "claims"
-                        }
-                    ]
-                }
-            ]
+            include: [{
+                model: db.UserAppDomain,
+                as: "userAppDomains",
+                include: [{
+                    model: db.AppDomain,
+                    as: "appDomain"
+                }, {
+                    model: db.Claim,
+                    as: "claims"
+                }]
+            }]
         });
 
         q.then(function (user) {
-            if (user) {                
+            if (user) {
                 var token = jwt.sign({
                     userId: user.id,
                     sysadmin: user.sysadmin,
                     username: user.username,
                     userAppDomains: user.userAppDomains,
-                }, clove.config.secret, {issuer: require("os").hostname()});
-                response.status(200).send({ token: token });
+                }, clove.config.secret, {
+                    issuer: require("os").hostname()
+                });
+                response.status(200).send({
+                    token: token
+                });
             } else {
-                response.status(401).send({ error: "Username and/or password is not valid" });
+                response.status(401).send({
+                    error: "Username and/or password is not valid"
+                });
             }
 
         }).catch(function (err) {
             console.log(err.stack);
-            response.status(500).send({ error: "Server error.", detail: err });
+            response.status(500).send({
+                error: "Server error.",
+                detail: err
+            });
         });
 
     };
-    
+
     /**
      * Creates a new user profile 
-    **/
+     **/
     Controller.sign_up = function signUp(request, response) {
-        var bail = function(err) {
-            response.status(500).send({error: err, success: false});
+        var bail = function (err) {
+            response.status(500).send({
+                error: err,
+                success: false
+            });
         };
-        
+
         var user = clove.db.User.build(request.body);
-        
+
         clove.async.series([
-            function(next) {
+            function (next) {
                 user.isValid({
-                    confirmPassword: true, 
+                    confirmPassword: true,
                     confirmation: request.body.password2
-                }, function(err, fieldErrors) {
+                }, function (err, fieldErrors) {
                     if (err) {
                         bail(err);
-                    } else if (fieldErrors) { 
+                    } else if (fieldErrors) {
                         response.status(420).send({
-                            success: false, 
-                            data: request.body, 
+                            success: false,
+                            data: request.body,
                             errors: fieldErrors
                         });
-                    } else { 
+                    } else {
                         next();
                     }
                 });
-            }, 
-            function(next) {
-                user.password = clove.utils.encrypt(user.password);
-                user.save().then(function() {
-                    next();
-                }).catch(function(err) {
-                    bail(err);
-                });  
             },
-            function(next) {
+            function (next) {
+                user.password = clove.utils.encrypt(user.password);
+                user.save().then(function () {
+                    next();
+                }).catch(function (err) {
+                    bail(err);
+                });
+            },
+            function (next) {
                 delete user.password;
-                response.send({data: user, success: true});
+                response.send({
+                    data: user,
+                    success: true
+                });
             }
         ]);
     };
 
     /**
      * Updates user profile's password for the given JWT 
-    **/
+     **/
     Controller.finish_reset_password = function finishResetPassword(request, response) {
         var payload;
-        
+
         // Verify the token is correct
         try {
             jwt.verify(request.body.token, clove.config.secret);
@@ -133,69 +143,93 @@ module.exports = function AuthController(app) {
             });
             return;
         }
-        
+
         if (request.body.password != request.body.password2) {
-            response.status(420).send({error: "Password must match confirmation password"});
+            response.status(420).send({
+                error: "Password must match confirmation password"
+            });
             return;
         }
-        
+
         var strength = clove.utils.check_password(request.body.password);
-        
+
         if (!strength) {
-            response.status(420).send({error: strength});
+            response.status(420).send({
+                error: strength
+            });
             return;
         }
-        
-        var dbError = function(err) {
+
+        var dbError = function (err) {
             // Add logging here since this should not really be happening in production
-            response.status(420).send({error: "Could not locate provided user account"});
+            response.status(420).send({
+                error: "Could not locate provided user account"
+            });
         };
-        
+
         clove.db.User.findById(payload.userId)
-            .then(function(user) {
+            .then(function (user) {
                 if (user) {
                     user.password = clove.utils.encrypt(request.body.password);
-                    user.save().then(function() {
-                        response.send({ success: true, message: "Password has been reset" }); 
+                    user.save().then(function () {
+                        response.send({
+                            success: true,
+                            message: "Password has been reset"
+                        });
                     }, dbError);
                 } else {
-                    dbError({error: "User attempted to reset the password on an account that could not be located"});
+                    dbError({
+                        error: "User attempted to reset the password on an account that could not be located"
+                    });
                 }
             }, dbError);
     };
 
     /**
      * Creates a password reset token (JWT) that is emailed to the user for password reset
-    **/
+     **/
     Controller.start_reset_password = function startResetPassword(request, response, next) {
-        
+
         if (!request.body.username) {
-            response.status(420).send({error: "Username or Email is required"});
+            response.status(420).send({
+                error: "Username or Email is required"
+            });
             return;
         }
-        
-        clove.db.User.findOne({where: {$or: [{username: request.body.username}, {email: request.body.username}]}})
-            .then(function(user) {
+
+        clove.db.User.findOne({
+                where: {
+                    $or: [{
+                        username: request.body.username
+                    }, {
+                        email: request.body.username
+                    }]
+                }
+            })
+            .then(function (user) {
                 if (user) {
                     var service = new EmailService();
                     var token = jwt.sign({
                         username: user.username,
                         email: user.email,
                         userId: user.id
-                    }, clove.config.secret, {expiresIn: "1h", subject: "password_reset"});
-                    
+                    }, clove.config.secret, {
+                        expiresIn: "1h",
+                        subject: "password_reset"
+                    });
+
                     var url = clove.config.password_reset_url + "?token=" + token;
-                    
-                    service.on("sent", function(err, msg) {
+
+                    service.on("sent", function (err, msg) {
 
                         response.status(200).send({
-                            success: true, 
+                            success: true,
                             token: (clove.config.allow_tests ? token : null),
                             email: (clove.config.allow_tests && msg ? err || msg : null)
                         });
-                        
+
                     });
-                    
+
                     service.send({
                         from: clove.config.smtp.system.user,
                         to: user.email,
@@ -206,10 +240,12 @@ module.exports = function AuthController(app) {
                             reset_url: url
                         }
                     });
-                    
+
                 } else {
-                    response.status(200).send({success: true});
-                } 
+                    response.status(200).send({
+                        success: true
+                    });
+                }
             });
 
     };

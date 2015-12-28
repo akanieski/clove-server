@@ -16,11 +16,15 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         classMethods: {
             associate: function (models) {
-                Claim.belongsToMany(models.UserAppDomain, { as: "userAppDomains", through: models.UserAppDomainClaim , foreignKey: "claimId" });
+                Claim.belongsToMany(models.UserAppDomain, {
+                    as: "userAppDomains",
+                    through: models.UserAppDomainClaim,
+                    foreignKey: "claimId"
+                });
             }
         },
         instanceMethods: {
-            isValid: function(options, cb) {
+            isValid: function (options, cb) {
                 if (typeof options === "function") {
                     cb = options;
                     options = {
@@ -28,21 +32,23 @@ module.exports = function (sequelize, DataTypes) {
                     };
                 }
                 var claim = this;
-                var bail = function(err) {cb(err);};
+                var bail = function (err) {
+                    cb(err);
+                };
                 var errors = {};
-                
+
                 cb(null, clove.utils.equals(errors, {}) ? null : errors);
-                
+
             }
         }
     });
-    
-    Claim.cache = function() {
-        return new Promise(function(resolve, reject) {
+
+    Claim.cache = function () {
+        return new Promise(function (resolve, reject) {
             if (!claimsCache) {
-                Claim.findAll().then(function(claims){
+                Claim.findAll().then(function (claims) {
                     var _tempCache = {};
-                    claims.forEach(function(claim){
+                    claims.forEach(function (claim) {
                         if (claim.name.toLowerCase().indexOf("admin") > -1 &&
                             claim.name.toLowerCase().indexOf("domain") > -1) {
                             _tempCache.DOMAIN_ADMINS = claim;
@@ -62,6 +68,6 @@ module.exports = function (sequelize, DataTypes) {
             }
         });
     };
-    
+
     return Claim;
 };

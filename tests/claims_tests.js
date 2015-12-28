@@ -22,8 +22,8 @@ function GetToken(username, password, next) {
 
 describe("Claims API", function () {
 
-    it("should get existing claim", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should get existing claim", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/claim/1",
                 json: {},
@@ -31,17 +31,17 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "existing claim response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain existing claim");
-                
+
                 done();
             });
         });
     });
 
-    it("should not get non-existent claim", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should not get non-existent claim", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/claim/0",
                 json: {},
@@ -49,17 +49,17 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 404, "non-existent claim response status code must be 404");
                 assert.equal(body.data, null, "response should not contain claim");
-                
+
                 done();
             });
         });
     });
 
-    it("should get existing claims", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should get existing claims", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/claims",
                 json: {},
@@ -67,17 +67,17 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "existing claims response status code must be 200");
                 assert.notEqual(body.data, null, "response should contain existing claims");
-                
+
                 done();
             });
         });
     });
 
-    it("should update existing claim", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should update existing claim", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/claim/1",
                 json: {},
@@ -96,20 +96,20 @@ describe("Claims API", function () {
                         Authorization: "Bearer " + token
                     }
                 }, function (err, resp, body) {
-                    
+
                     assert.equal(resp.statusCode, 200, "existing claim response status code must be 200");
                     assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain existing claim");
                     assert.equal(newData.description, body.data.description);
-                    
+
                     done();
-                    
+
                 });
             });
         });
     });
 
-    it("should create new claim", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should create new claim", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.post({
                 url: host + "/api/claim",
                 json: {
@@ -120,65 +120,65 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "create claim response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain new claim");
-                
+
                 done();
-                
+
             });
         });
     });
 
-    it("should list claims for specified app domain and user", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should list claims for specified app domain and user", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/appdomain/1/user/1/claims",
-                json: { },
+                json: {},
                 headers: {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "claims by specific app domain and user response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain claims for specified app domain and user");
-                
+
                 done();
             });
         });
     });
 
-    it("should add claim for specified app domain to user", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should add claim for specified app domain to user", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.post({
                 url: host + "/api/appdomain/1/user/1/claim/2",
-                json: { },
+                json: {},
                 headers: {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
                 assert.equal(body.success, true, "response should contain claims for specified app domain and user");
-                
+
                 done();
             });
         });
     });
 
-    it("should remove claim from specified user for specified app domain", function(done) {
-        GetToken("administrator", "administrator", function(token) {
+    it("should remove claim from specified user for specified app domain", function (done) {
+        GetToken("administrator", "administrator", function (token) {
             request.del({
                 url: host + "/api/appdomain/1/user/1/claim/2",
-                json: { },
+                json: {},
                 headers: {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                
+
                 assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
                 assert.equal(body.success, true, "response should contain claims for specified app domain and user");
-                
+
                 done();
             });
         });

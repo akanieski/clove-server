@@ -4,7 +4,7 @@ var async = require('async');
 module.exports = {
     up: function (migration, DataTypes, done) {
         async.series([
-            function(next){
+            function (next) {
                 migration.createTable("tbl_appdomains", {
                     id: {
                         allowNull: false,
@@ -28,7 +28,7 @@ module.exports = {
                     next();
                 });
             },
-            function(next){
+            function (next) {
                 migration.createTable("tbl_userappdomains", {
                     id: {
                         allowNull: false,
@@ -57,8 +57,8 @@ module.exports = {
                 }).done(function () {
                     next();
                 });
-            }, 
-            function(next){
+            },
+            function (next) {
                 migration.addColumn("tbl_users", "defaultAppDomainId", {
                     type: DataTypes.BIGINT,
                     references: "tbl_users",
@@ -66,8 +66,8 @@ module.exports = {
                 }).done(function () {
                     next();
                 });
-            }, 
-            function(next){
+            },
+            function (next) {
                 migration.createTable("tbl_claims", {
                     id: {
                         type: DataTypes.BIGINT,
@@ -76,8 +76,13 @@ module.exports = {
                         allowNull: false,
                         primaryKey: true
                     },
-                    name: {type: DataTypes.STRING, allowNull: false},
-                    description: {type: DataTypes.STRING},
+                    name: {
+                        type: DataTypes.STRING,
+                        allowNull: false
+                    },
+                    description: {
+                        type: DataTypes.STRING
+                    },
                     createdAt: {
                         allowNull: false,
                         type: DataTypes.DATE
@@ -89,8 +94,8 @@ module.exports = {
                 }).done(function () {
                     next();
                 });
-            }, 
-            function(next){
+            },
+            function (next) {
                 migration.createTable("tbl_userappdomainclaims", {
                     id: {
                         type: DataTypes.BIGINT,
@@ -100,13 +105,13 @@ module.exports = {
                         primaryKey: true
                     },
                     claimId: {
-                        type: DataTypes.BIGINT, 
+                        type: DataTypes.BIGINT,
                         allowNull: false,
                         reference: "tbl_userclaims",
                         referenceKey: "id"
                     },
                     userAppDomainId: {
-                        type: DataTypes.BIGINT, 
+                        type: DataTypes.BIGINT,
                         allowNull: false,
                         reference: "tbl_userappdomains",
                         referenceKey: "id"
@@ -123,12 +128,12 @@ module.exports = {
                     next();
                 });
             }
-        ], function(){
+        ], function () {
             done();
         });
-        
-        
-  },
+
+
+    },
 
     down: function (migration, DataTypes, done) {
         return migration
@@ -136,5 +141,5 @@ module.exports = {
             .dropTable("tbl_appdomains")
             .dropTable("tbl_claims")
             .done(done);
-  }
+    }
 };

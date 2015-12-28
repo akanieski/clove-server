@@ -1,4 +1,4 @@
-﻿/* global global */
+/* global global */
 /* global process */
 /* global clove */
 var express = require("express");
@@ -21,12 +21,12 @@ var AppDomainController = require("./app/controllers/appdomain_controller.js");
 
 clove.middleware = require("./app/middleware");
 
-clove.db.Claim.cache().then(function(claims){
+clove.db.Claim.cache().then(function (claims) {
     clove.controllers.system = new SystemController(app);
     clove.controllers.auth = new AuthController(app);
     clove.controllers.appdomain = new AppDomainController(app);
     clove.controllers.claims = new ClaimsController(app);
-})
+});
 
 app.use(express.static("www"));
 
@@ -36,14 +36,14 @@ if (!module.parent) {
         clove._server = http.createServer({
             key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
             cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
-        }, app).listen(clove.config.endpoint_port, function() {
-            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", 
-                        clove.config.endpoint_port);
+        }, app).listen(clove.config.endpoint_port, function () {
+            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
+                clove.config.endpoint_port);
         });
     } else {
-        clove._server = http.createServer(app).listen(clove.config.endpoint_port, function() {
-            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.", 
-                        clove.config.endpoint_port);
+        clove._server = http.createServer(app).listen(clove.config.endpoint_port, function () {
+            console.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
+                clove.config.endpoint_port);
         });
     }
 } else {
