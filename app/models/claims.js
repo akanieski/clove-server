@@ -4,7 +4,7 @@
 
 module.exports = function (sequelize, DataTypes) {
     var claimsCache = null;
-    var Promise = require('promise');
+    var Promise = require("promise");
     var Claim = sequelize.define("Claim", {
         name: {
             type: DataTypes.STRING,

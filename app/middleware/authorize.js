@@ -16,8 +16,8 @@
  */
 module.exports = (function () {
     var jwt = require("jsonwebtoken");
-    var _ = require('lodash');
-    var async = require('async');
+    var _ = require("lodash");
+    var async = require("async");
 
     return function _processJWT(options, action) {
         if (typeof options == "function") {
@@ -63,7 +63,7 @@ module.exports = (function () {
                         if (!payload.sysadmin && (options.domainAccess || options.allowedClaims)) {
                             // App domain is required to determine if user has access to given app domain
                             var appDomainField = "appDomainId";
-                            if (typeof options.domainAccess === 'string') {
+                            if (typeof options.domainAccess === "string") {
                                 appDomainField = typeof options.domainAccess;
                             }
                             if (!request.params[appDomainField]) {
@@ -72,7 +72,7 @@ module.exports = (function () {
                             }
                             request.params[appDomainField] = parseInt(request.params[appDomainField], 10);
                             appDomainMatch = _.findWhere(payload.userAppDomains, {
-                                'appDomainId': request.params[appDomainField]
+                                appDomainId: request.params[appDomainField]
                             });
 
                             if (!appDomainMatch) {
@@ -91,7 +91,7 @@ module.exports = (function () {
                                     return _.filter(appDomainMatch.claims, function (_claim) {
                                         return _claim.id == claim.id;
                                     });
-                                }).length == 0) {
+                                }).length === 0) {
                                 bail("User not authorized to access this endpoint for given app domain", 401);
                                 return;
                             }

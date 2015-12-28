@@ -266,7 +266,7 @@ module.exports = function ClaimsController(app) {
             allowedClaims: [claims.DOMAIN_ADMINS]
         };
 
-        //General Endpoints
+        // General Endpoints
         app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
         app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
 

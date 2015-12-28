@@ -77,7 +77,7 @@ describe("Token Authentication API", function () {
             }, function (err, resp, body) {
                 assert.equal(resp.statusCode, 200, "login response status code must be 200");
                 assert.equal(body.token !== "undefined" && body.token !== null, true);
-                var payload = JSON.parse(atob(body.token.split('.')[1]));
+                var payload = JSON.parse(atob(body.token.split(".")[1]));
 
                 assert.notEqual(payload, null);
                 assert.notEqual(payload.userAppDomains, null);
