@@ -147,7 +147,7 @@ module.exports = function ClaimsController(app) {
             
             // Check to make sure app domain exists
             checkUserAppDomainExists: function checkUserAppDomainExists(next) {
-                db.UserAppDomain.findById(req.params.userAppDomainId).then(function(userAppDomain) {
+                db.UserAppDomain.findOne({where: {userId: req.params.userId, appDomainId: req.params.appDomainId}}).then(function(userAppDomain) {
                     if (!userAppDomain) {
                         bail("Could not find app domain specified for given user", 404);
                         next(null, false);
@@ -190,6 +190,11 @@ module.exports = function ClaimsController(app) {
     };
     
     db.Claim.cache().then(function(claims){
+        
+        var DOMAIN_ADMINS_ONLY = {
+            allowedClaims: [claims.DOMAIN_ADMINS]
+        };
+        
         //General Endpoints
         app.get("/api/claims", clove.middleware.authorize({}, Controller.getClaims));
         app.get("/api/claim/:id", clove.middleware.authorize({}, Controller.getClaim));
@@ -198,10 +203,10 @@ module.exports = function ClaimsController(app) {
         app.put("/api/claim/:id", clove.middleware.authorize({}, Controller.updateClaim));
         app.post("/api/claim", clove.middleware.authorize({}, Controller.createClaim));
         
-        app.get("/api/user/:userId/appdomain/:appDomainId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
+        app.get("/api/appdomain/:appDomainId/user/:userId/claims", clove.middleware.authorize({}, Controller.getClaimsByAppDomainAndUser));
         
         // Domain Admin endpoints
-        app.post("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.addClaimToAppDomainAndUser));
-        app.delete("/api/user/:userId/appdomain/:userAppDomainId/claim/:claimId", clove.middleware.authorize({}, Controller.removeClaimFromUserAppDomain));
+        app.post("/api/appdomain/:appDomainId/user/:userId/claim/:claimId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.addClaimToAppDomainAndUser));
+        app.delete("/api/appdomain/:appDomainId/user/:userId/claim/:claimId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.removeClaimFromUserAppDomain));
     });
 };

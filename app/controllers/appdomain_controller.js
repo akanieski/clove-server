@@ -154,14 +154,16 @@ module.exports = function AppDomainController(app) {
     
     db.Claim.cache().then(function(claims){
         
+        var DOMAIN_ADMINS_ONLY = {
+            allowedClaims: [claims.DOMAIN_ADMINS]
+        };
+        
         app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
         app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
         app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
         app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
         
-        app.post("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize({
-            allowedClaims: [claims.DOMAIN_ADMINS]
-        }, Controller.addUserToAppDomain));
+        app.post("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.addUserToAppDomain));
         
     });
     

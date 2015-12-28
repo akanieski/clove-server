@@ -117,7 +117,7 @@ describe("App Domain API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                console.log(err || resp.body);
+                
                 assert.equal(resp.statusCode, 401, "add app domain response status code must be 401");
                 assert.equal(body.success, false, "response should be successful");
 

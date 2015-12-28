@@ -133,7 +133,7 @@ describe("Claims API", function () {
     it("should list claims for specified app domain and user", function(done) {
         GetToken("administrator", "administrator", function(token) {
             request.get({
-                url: host + "/api/user/1/appdomain/1/claims",
+                url: host + "/api/appdomain/1/user/1/claims",
                 json: { },
                 headers: {
                     Authorization: "Bearer " + token
@@ -151,7 +151,7 @@ describe("Claims API", function () {
     it("should add claim for specified app domain to user", function(done) {
         GetToken("administrator", "administrator", function(token) {
             request.post({
-                url: host + "/api/user/1/appdomain/1/claim/2",
+                url: host + "/api/appdomain/1/user/1/claim/2",
                 json: { },
                 headers: {
                     Authorization: "Bearer " + token
@@ -169,7 +169,7 @@ describe("Claims API", function () {
     it("should remove claim from specified user for specified app domain", function(done) {
         GetToken("administrator", "administrator", function(token) {
             request.del({
-                url: host + "/api/user/1/appdomain/1/claim/2",
+                url: host + "/api/appdomain/1/user/1/claim/2",
                 json: { },
                 headers: {
                     Authorization: "Bearer " + token
