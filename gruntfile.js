@@ -29,7 +29,7 @@ module.exports = function (grunt) {
                 wrap_attributes_indent_size: 4,
                 end_with_newline: true
             },
-            files: ["*.js", "app/**/*.js", "migrations/*.js", "tests/*.js"],
+            files: ["*.js", "app/**/*.js", "migrations/*.js", "tests/*.js", "seeders/**.js"],
         },
         watch: {
             files: ["app/**/*.js", "models/**/*.js"],
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
         },
         shell: {
             seed: {
-                command: "node " + path.resolve("./seeders/test_data.js")
+                command: "sequelize db:seed --seeders-path ./seeders/master & sequelize db:seed --seeders-path ./seeders/test"
             },
             migrate: {
                 command: "sequelize db:migrate",
@@ -117,7 +117,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask("default", ["serve:start", "watch"]);
-    grunt.registerTask("build", ["jshint", "jscs"]);
+    grunt.registerTask("build", ["js_beautify", "jshint", "jscs"]);
     grunt.registerTask("test", [
         "wipe",
         "shell:migrate",
