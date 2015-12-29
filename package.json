@@ -8,7 +8,7 @@
     "email": ""
   },
   "scripts": {
-    "postinstall": "sequelize db:migrate",
+    "postinstall": "sequelize db:migrate & sequelize db:seed --seeders-path ./seeders/master",
     "start": "node app.js",
     "preinstall": "npm install -g sequelize-cli"
   },
@@ -20,6 +20,7 @@
     "ejs": "^2.3.4",
     "emailjs": "^1.0.1",
     "express": "^4.13.3",
+    "heroku-client": "^2.4.0",
     "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
     "moment": "^2.9.0",
