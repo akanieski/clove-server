@@ -87,7 +87,9 @@ module.exports = function AuthController(app) {
                 success: false
             });
         };
-
+        
+        console.log(request.body);
+        
         var user = clove.db.User.build(request.body);
 
         clove.async.series([
