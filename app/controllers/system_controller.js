@@ -7,8 +7,9 @@ module.exports = function SystemController(app) {
     app.use(function corsHandler(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
-        next();
+        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+        if (req.method === 'OPTIONS') { res.send(200); }
+        else { next(); }
     });
 
     app.get("/", function defaultRoute(req, res) {
