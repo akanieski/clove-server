@@ -32,7 +32,7 @@ module.exports = function AuthController(app) {
         var q = db.User.findOne({
             where: {
                 active: true,
-                username: request.body.username,
+                $or: [{email: request.body.email}, {username: request.body.username}],
                 password: clove.utils.encrypt(request.body.password)
             },
             include: [{

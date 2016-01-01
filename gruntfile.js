@@ -138,7 +138,7 @@ module.exports = function (grunt) {
             var startup = function () {
                 console.log("Starting Clove Server...");
                 clearCache();
-                var app = require("./app.js");
+                var app = require("./app.js")();
                 var http = clove.config.ssl ? require("https") : require("http");
                 if (clove.config.ssl) {
                     clove._server = http.createServer({

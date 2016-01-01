@@ -24,7 +24,7 @@ module.exports = (function () {
             action = options;
             options = {};
         }
-        return function processJWT(request, response, next) {
+        return function processJWT(request, response, nextHandler) {
             var bail = function (err, code) {
                 response.status(code || 500).send({
                     error: err,
@@ -102,7 +102,7 @@ module.exports = (function () {
 
                 ], function () {
                     request.session = payload;
-                    action(request, response, next);
+                    nextHandler();
                 });
 
             } else {

@@ -60,11 +60,7 @@
       "capitals": true
     }
   },
-  "test": {
-    "ssl": {
-      "key": "./certs/self-signed.key",
-      "crt": "./certs/self-signed.crt"
-    },  
+  "test": { 
     "logging": false,
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
