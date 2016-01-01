@@ -135,10 +135,12 @@ module.exports = function (grunt) {
             var done = this.async();
             console.log(global.clove !== undefined ? "Existing server instance located" : "No Server Instance Found");
 
+            
             var startup = function () {
                 console.log("Starting Clove Server...");
                 clearCache();
-                var app = require("./app.js")();
+                var CloveServer = require("./app.js");
+                var app = CloveServer();
                 var http = clove.config.ssl ? require("https") : require("http");
                 if (clove.config.ssl) {
                     clove._server = http.createServer({

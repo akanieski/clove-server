@@ -1,14 +1,14 @@
 /* global global */
 /* global process */
 /* global clove */
-function CloveServer() {
-    var express = require("express");
-    var app = express();
-    var fs = require("fs");
-    var path = require("path");
-    var bodyParser = require("body-parser");
+var express = require("express");
+var app = express();
+var fs = require("fs");
+var path = require("path");
+var bodyParser = require("body-parser");
 
-    global.clove = require("./app/core");
+global.clove = require("./app/core");
+function CloveServer() {
 
     var http = clove.config.ssl ? require("https") : require("http");
 
@@ -27,8 +27,6 @@ function CloveServer() {
         clove.controllers.auth = new AuthController(app);
         clove.controllers.appdomain = new AppDomainController(app);
         clove.controllers.claims = new ClaimsController(app);
-
-        console.log(app._router);
 
         app.use(express.static("www"));
 
@@ -59,5 +57,5 @@ function CloveServer() {
 if (!module.parent) {
     new CloveServer();
 } else {
-    module.export = new CloveServer();
+    module.exports = CloveServer;
 }

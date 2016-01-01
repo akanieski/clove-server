@@ -54,6 +54,9 @@ module.exports = function AuthController(app) {
                     userId: user.id,
                     sysadmin: user.sysadmin,
                     username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
                     userAppDomains: user.userAppDomains,
                 }, clove.config.secret, {
                     issuer: require("os").hostname()
