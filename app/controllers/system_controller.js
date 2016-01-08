@@ -3,7 +3,7 @@ module.exports = function SystemController(app) {
 
     var Controller = this;
 
-    console.log("[INIT] Registered CORS Handler");
+    clove.log("[INIT] Registered CORS Handler");
     
     app.use(function corsHandler(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");

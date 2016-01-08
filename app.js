@@ -8,8 +8,9 @@ var path = require("path");
 var bodyParser = require("body-parser");
 
 global.clove = require("./app/core");
-function CloveServer() {
-
+function CloveServer(options, completed) {
+    clove.log = options.logger || console.log;
+    
     var http = clove.config.ssl ? require("https") : require("http");
 
     app.use(bodyParser.json());
@@ -30,25 +31,21 @@ function CloveServer() {
 
         app.use(express.static("www"));
 
-        // For Ad-Hoc execution
-        if (!module.parent) {
-            if (clove.config.ssl) {
-                clove._server = http.createServer({
-                    key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
-                    cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
-                }, app).listen(clove.config.endpoint_port, function () {
-                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
-                        clove.config.endpoint_port);
-                });
-            } else {
-                clove._server = http.createServer(app).listen(clove.config.endpoint_port, function () {
-                    console.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
-                        clove.config.endpoint_port);
-                });
-            }
+        if (clove.config.ssl) {
+            clove._server = http.createServer({
+                key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
+                cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
+            }, app).listen(clove.config.endpoint_port, function () {
+                clove.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
+                    clove.config.endpoint_port);
+                if (completed) completed();
+            });
         } else {
-            // For module export execution
-            console.log("Clove app module established");
+            clove._server = http.createServer(app).listen(clove.config.endpoint_port, function () {
+                clove.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
+                    clove.config.endpoint_port);
+                if (completed) completed();
+            });
         }
     });
     

@@ -119,7 +119,7 @@ module.exports = function ClaimsController(app) {
 
     Controller.getClaimsByAppDomainAndUser = function getClaimsByAppDomainAndUser(req, res, next) {
         var bail = function (err, code) {
-            console.log(arguments);
+            clove.log(arguments);
             res.status(code || 500).send({
                 error: err,
                 success: false

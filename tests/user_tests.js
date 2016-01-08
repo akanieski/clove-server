@@ -23,7 +23,7 @@ describe("User API", function () {
                     email: "a@a.com"
                 }
             }, function (err, resp, body) {
-
+                
                 assert.equal(resp.statusCode, 200, "sign up response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true);
                 done();

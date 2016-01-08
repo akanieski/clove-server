@@ -7,7 +7,7 @@ module.exports = function AppDomainController(app) {
 
     Controller.getAppDomainsByUser = function getAppDomainsByUser(req, res, next) {
         var bail = function (err, code) {
-            console.log(arguments);
+            clove.log(arguments);
             res.status(code || 500).send({
                 error: err,
                 success: false
@@ -40,7 +40,7 @@ module.exports = function AppDomainController(app) {
 
     Controller.getAppDomainByUser = function getAppDomainByUser(req, res, next) {
         var bail = function (err, code) {
-            console.log(arguments);
+            clove.log(arguments);
             res.status(code || 500).send({
                 error: err,
                 success: false
@@ -210,7 +210,7 @@ module.exports = function AppDomainController(app) {
         app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
         app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
         app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
-
+        app.get("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
         app.post("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.addUserToAppDomain));
 
     });

@@ -71,7 +71,7 @@ module.exports = function AuthController(app) {
             }
 
         }).catch(function (err) {
-            console.log(err.stack);
+            clove.log(err.stack);
             response.status(500).send({
                 error: "Server error.",
                 detail: err
@@ -90,8 +90,6 @@ module.exports = function AuthController(app) {
                 success: false
             });
         };
-        
-        console.log(request.body);
         
         var user = clove.db.User.build(request.body);
 

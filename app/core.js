@@ -5,7 +5,7 @@ module.exports = function () {
         env = "development";
     }
     var config = require("../config/config.json")[env];
-
+    
     var core = {
         db: require("./models")(env),
         config: config,

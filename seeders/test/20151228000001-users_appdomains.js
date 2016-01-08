@@ -35,7 +35,7 @@ module.exports = {
                 lastName: "User",
                 username: "basicuser",
                 password: clove.utils.encrypt("basicuser"),
-                email: "andrew.legacy@gmail.com",
+                email: "basicuser@gmail.com",
                 active: 1,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -45,7 +45,7 @@ module.exports = {
                 lastName: "User 2",
                 username: "basicuser2",
                 password: clove.utils.encrypt("basicuser2"),
-                email: "andrew.legacy@gmail.com",
+                email: "basicuser2@gmail.com",
                 active: 1,
                 createdAt: new Date(),
                 updatedAt: new Date()

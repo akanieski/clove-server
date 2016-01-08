@@ -7,7 +7,6 @@ var assert = require("assert");
 global.clove = require("../app/core");
 
 var host = process.env.testing_host || ((clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port);
-console.log(">>>>>>>>>>" + host);
 
 function GetToken(username, password, next) {
     request.post({
@@ -33,7 +32,7 @@ describe("App Domain API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-
+                
                 assert.equal(resp.statusCode, 200, "app domains by user response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain list of app domains");
 
@@ -45,13 +44,13 @@ describe("App Domain API", function () {
     it("should get specified app domain from user", function (done) {
         GetToken("administrator", "administrator", function (token) {
             request.get({
-                url: host + "/api/user/1/appdomain/1",
+                url: host + "/api/appdomain/1/user/1",
                 json: {},
                 headers: {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-
+                
                 assert.equal(resp.statusCode, 200, "specific app domain by user response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain specified app domain");
 

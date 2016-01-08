@@ -49,8 +49,7 @@ module.exports = (function () {
                 }
                 var payload = jwt.decode(token);
                 if (!payload) {
-                    console.log(">>>>>>>>>>");
-                    console.log(request.headers.authorization);
+                    clove.log(request.headers.authorization);
                     bail("Token invalid", 400);
                     return;
                 }
@@ -102,7 +101,7 @@ module.exports = (function () {
 
                 ], function () {
                     request.session = payload;
-                    nextHandler();
+                    action(request, response, nextHandler);
                 });
 
             } else {
