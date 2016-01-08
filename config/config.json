@@ -61,6 +61,10 @@
     }
   },
   "test": { 
+    "ssl": {
+        "key": "./certs/self-signed.key",
+        "crt": "./certs/self-signed.crt"
+    },
     "logging": false,
     "dialect": "sqlite",
     "storage": "./db.test.sqlite",
