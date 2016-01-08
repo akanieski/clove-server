@@ -9,6 +9,7 @@ var bodyParser = require("body-parser");
 
 global.clove = require("./app/core");
 function CloveServer(options, completed) {
+    options = options || {};
     clove.log = options.logger || console.log;
     
     var http = clove.config.ssl ? require("https") : require("http");
