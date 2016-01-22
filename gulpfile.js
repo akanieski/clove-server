@@ -48,7 +48,7 @@ gulp.task('migrate', dbTasks['db:migrate'].task);
 
 gulp.task('seed:master', function(cb){
     
-    child_process.execSync('sequelize db:seed --seeders-path=./seeders/master').toString();
+    child_process.execSync('sequelize db:seed:all --seeders-path=./seeders/master').toString();
     cb();
 });
 
@@ -58,7 +58,7 @@ gulp.task('migrate', function(cb){
 });
 
 gulp.task('seed:test', function(cb) {
-    child_process.execSync('sequelize db:seed --seeders-path=./seeders/test').toString();
+    child_process.execSync('sequelize db:seed:all --seeders-path=./seeders/test').toString();
     cb();
 });
 
