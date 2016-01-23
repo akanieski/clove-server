@@ -28,7 +28,7 @@ module.exports = function AppDomainController(app) {
                 bail("App domain not accessible for given user", 401);
                 return;
             }
-            var domain_token = jwt.sign(userAppDomain.appDomain, clove.config.secret, {
+            var domain_token = jwt.sign(userAppDomain.appDomain.toJSON(), clove.config.secret, {
                 issuer: require("os").hostname(),
                 subject: "domain_token"
             });
