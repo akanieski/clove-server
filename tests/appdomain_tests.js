@@ -4,6 +4,7 @@
 /* global clove */
 var request = require("request");
 var assert = require("assert");
+var jwt = require("jsonwebtoken");
 global.clove = require("../app/core");
 
 var host = process.env.testing_host || ((clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port);
@@ -142,6 +143,25 @@ describe("App Domain API", function () {
                 assert.equal(body.data !== "undefined" && body.data !== null && body.data.id > 0, true, "response should contain new app domain");
                 assert.equal(body.data.userId > 0, true, "new app domain should be created under the current user");
 
+                done();
+            });
+        });
+    });
+
+    it("should return a proper token when selecting an app domain", function (done) {
+        GetToken("administrator", "administrator", function (token) {
+            request.get({
+                url: host + "/api/appdomain/1/user/1/selectAppDomain",
+                json: {},
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }, function (err, resp, body) {
+                
+                assert.equal(resp.statusCode, 200, "app domain selection token response status code must be 200");
+                assert.notEqual(body.token, false, "response should contain a proper app domain token");
+                assert.notEqual(jwt.verify(body.token, clove.config.secret), false, "response should contain a proper app domain token");
+                
                 done();
             });
         });

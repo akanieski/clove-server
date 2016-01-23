@@ -21,6 +21,7 @@ function CloveServer(options, completed) {
     var AuthController = require("./app/controllers/auth_controller.js");
     var ClaimsController = require("./app/controllers/claim_controller.js");
     var AppDomainController = require("./app/controllers/appdomain_controller.js");
+    var UserController = require("./app/controllers/user_controller.js");
 
 
     clove.db.Claim.cache().then(function (claims) {
@@ -29,6 +30,7 @@ function CloveServer(options, completed) {
         clove.controllers.auth = new AuthController(app);
         clove.controllers.appdomain = new AppDomainController(app);
         clove.controllers.claims = new ClaimsController(app);
+        clove.controllers.user = new UserController(app);
 
         app.use(express.static("www"));
 

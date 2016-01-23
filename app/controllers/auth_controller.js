@@ -59,7 +59,8 @@ module.exports = function AuthController(app) {
                     email: user.email,
                     userAppDomains: user.userAppDomains,
                 }, clove.config.secret, {
-                    issuer: require("os").hostname()
+                    issuer: require("os").hostname(),
+                    subject: "auth_token"
                 });
                 response.status(200).send({
                     token: token
