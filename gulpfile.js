@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     dbTasks = require('./node_modules/sequelize-cli/lib/tasks/db'),
     child_process = require('child_process'),
     mocha = require('gulp-mocha'),
+    path = require('path'),
     jscs = require('gulp-jscs'),
     runSequence = require('run-sequence'),
     gutil = require('gulp-util'),
@@ -48,17 +49,17 @@ gulp.task('migrate', dbTasks['db:migrate'].task);
 
 gulp.task('seed:master', function(cb){
     
-    child_process.execSync('sequelize db:seed:all --seeders-path=./seeders/master').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/master').toString();
     cb();
 });
 
 gulp.task('migrate', function(cb){
-    child_process.execSync('sequelize db:migrate').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:migrate').toString();
     cb();
 });
 
 gulp.task('seed:test', function(cb) {
-    child_process.execSync('sequelize db:seed:all --seeders-path=./seeders/test').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/test').toString();
     cb();
 });
 

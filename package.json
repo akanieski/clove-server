@@ -4,13 +4,11 @@
   "description": "clove-server",
   "main": "app.js",
   "author": {
-    "name": "ankan",
-    "email": ""
+    "name": "Andrew Kanieski",
+    "email": "andrewk@varsityg.com"
   },
   "scripts": {
-    "postinstall": "sequelize db:migrate",
-    "start": "node app.js",
-    "preinstall": "npm install -g sequelize-cli"
+    "start": "node app.js"
   },
   "dependencies": {
     "async": "^1.4.2",
@@ -41,16 +39,7 @@
     "gulp-util": "^3.0.7",
     "jshint-stylish": "^2.1.0",
     "mocha": "^2.3.3",
-    "run-sequence": "^1.1.5"
-  },
-  "jspm": {
-    "dependencies": {
-      "aurelia-http-client": "npm:aurelia-http-client@^1.0.0-beta.1"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.8.24",
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "core-js": "npm:core-js@^1.1.4"
-    }
+    "run-sequence": "^1.1.5",
+    "sequelize-cli": "^2.3.1"
   }
 }
