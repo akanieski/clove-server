@@ -39,7 +39,7 @@ function CloveServer(options, completed) {
                 key: fs.readFileSync(path.resolve(clove.config.ssl.key)),
                 cert: fs.readFileSync(path.resolve(clove.config.ssl.crt))
             }, app).listen(clove.config.endpoint_port, function () {
-                clove.log("Clove server listening on port %s using the '" + clove.env + "' environment.",
+                clove.log("Clove server listening on port %s using the '" + clove.env + "' environment (HTTPS).",
                     clove.config.endpoint_port);
                 if (completed) completed();
             });

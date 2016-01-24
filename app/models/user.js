@@ -34,6 +34,16 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         instanceMethods: {
+            toBasicJSON: function() {
+                return {
+                    id: this.id,
+                    username: this.username,
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    fullName: this.firstName + ' ' + this.lastName,
+                    email: this.email
+                };
+            },
             isValid: function (options, cb) {
                 if (typeof options === "function") {
                     cb = options;
@@ -61,11 +71,11 @@ module.exports = function (sequelize, DataTypes) {
                 if (!clove.utils.check_email(user.email)) {
                     errors.email = "Email is not valid";
                 }
-                if (clove.utils.check_password(this.password)) {
+                if (!options.skipPasswordCheck && clove.utils.check_password(this.password)) {
                     errors.password = clove.utils.check_password(this.password);
                 }
 
-                if (options.confirmPassword && this.password !== options.confirmation) {
+                if (!options.skipPasswordCheck && options.confirmPassword && this.password !== options.confirmation) {
                     errors.password2 = "Password confirmation does not match";
                 }
 
@@ -73,7 +83,7 @@ module.exports = function (sequelize, DataTypes) {
                     function CheckExistingUsername(done) {
                         if (errors.username) {
                             done();
-                        } else {
+                        } else if (!user.id) { // Check on new users only
                             clove.db.User.findOne({
                                     where: {
                                         username: user.username
@@ -85,12 +95,14 @@ module.exports = function (sequelize, DataTypes) {
                                     }
                                     done();
                                 }, bail);
+                        } else {
+                            done();
                         }
                     },
                     function CheckExistingEmail(done) {
                         if (errors.email) {
                             done();
-                        } else {
+                        } else if (!user.id) { // Check on new users only
                             clove.db.User.findOne({
                                     where: {
                                         email: user.email
@@ -102,6 +114,8 @@ module.exports = function (sequelize, DataTypes) {
                                     }
                                     done();
                                 }, bail);
+                        } else {
+                            done();
                         }
                     }
                 ], function () {

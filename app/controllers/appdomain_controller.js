@@ -242,11 +242,11 @@ module.exports = function AppDomainController(app) {
         };
 
         app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
-        app.get("/api/appdomain/:appDomainId/user/:userId/selectAppDomain", clove.middleware.authorize({}, Controller.selectAppDomain));
+        app.post("/api/appdomain/:appDomainId/user/:userId/selectAppDomain", clove.middleware.authorize({}, Controller.selectAppDomain));
         app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
         app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
         app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
-        app.get("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
+        //app.get("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize({}, Controller.getUserByAppDomain));
         app.post("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.addUserToAppDomain));
 
     });
