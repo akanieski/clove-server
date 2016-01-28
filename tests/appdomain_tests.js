@@ -150,11 +150,11 @@ describe("App Domain API", function () {
 
     it("should return a proper token when selecting an app domain", function (done) {
         GetToken("administrator", "administrator", function (token) {
-            request.get({
+            request.post({
                 url: host + "/api/appdomain/1/user/1/selectAppDomain",
                 json: {},
                 headers: {
-                    Authorization: "Bearer " + token
+                    authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
                 
