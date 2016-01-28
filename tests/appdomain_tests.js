@@ -42,7 +42,7 @@ describe("App Domain API", function () {
         });
     });
 
-    it("should get specified app domain from user", function (done) {
+    it("should get specified from user from app domain", function (done) {
         GetToken("administrator", "administrator", function (token) {
             request.get({
                 url: host + "/api/appdomain/1/user/1",
@@ -52,8 +52,8 @@ describe("App Domain API", function () {
                 }
             }, function (err, resp, body) {
                 
-                assert.equal(resp.statusCode, 200, "specific app domain by user response status code must be 200");
-                assert.equal(body.data !== "undefined" && body.data !== null && body.data.length > 0, true, "response should contain specified app domain");
+                assert.equal(resp.statusCode, 200, "specific user by app domain response status code must be 200");
+                assert.equal(body.data !== "undefined" && body.data !== null, true, "response should contain specified user");
 
                 done();
             });

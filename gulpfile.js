@@ -49,8 +49,6 @@ gulp.task('run_tests', function(cb){
 gulp.task('migrate', dbTasks['db:migrate'].task);
 
 gulp.task('seed:master', function(cb){
-    console.log(path.resolve('./node_modules/.bin/sequelize'));
-    console.log(fs.existsSync(path.resolve('./node_modules/.bin/sequelize')));
     child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/master').toString();
     cb();
 });
