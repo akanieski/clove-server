@@ -12,7 +12,7 @@ module.exports = function (sequelize, DataTypes) {
         active: {
             type: DataTypes.BOOLEAN,
             defaultValue: 1
-        },
+        }
     }, {
         tableName: "tbl_users",
         timestamps: true,

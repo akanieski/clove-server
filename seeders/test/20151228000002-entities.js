@@ -2,6 +2,7 @@
 /* jshint node: true */
 var Promise = require("promise");
 var async = require("async");
+global.clove = require("../../app/core");
 
 var contact1 = {
     id: 1,
@@ -19,6 +20,7 @@ var contact1 = {
     createdAt: new Date()
 };
 var contact2 = {
+    id: 2,
     firstName: "Suzanne",
     lastName: "Blackbeard",
     attention: "Suzie Blackbeard",
@@ -50,12 +52,12 @@ module.exports = {
             async.series([
                 function(next) {
                     queryInterface
-                        .bulkInsert("tbl_contacts", [contact1, contact2])
+                        .bulkInsert("tbl_contacts", [contact1, contact2], {}, clove.db.Contact.attributes)
                         .then(next);
                 },
                 function(next) {
                     queryInterface
-                        .bulkInsert("tbl_entities", [entity1])
+                        .bulkInsert("tbl_entities", [entity1], {}, clove.db.Entity.attributes)
                         .then(next);
                 }
             ], resolve);

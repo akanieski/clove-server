@@ -1,6 +1,8 @@
 "use strict";
 /* jshint node: true */
 
+global.clove = require("../../app/core");
+
 var claims = [
     {
         id: 1,
@@ -28,7 +30,7 @@ var claims = [
 module.exports = {
     
     up: function (queryInterface, Sequelize) {
-        return queryInterface.bulkInsert("tbl_claims", claims, {});
+        return queryInterface.bulkInsert("tbl_claims", claims, {}, clove.db.Claim.attributes);
     },
 
     down: function (queryInterface, Sequelize) {

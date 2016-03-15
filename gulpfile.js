@@ -15,23 +15,74 @@ var gulp = require('gulp'),
     exec = require('child_process').exec;
 
 gulp.task('wipedb', function(done) {
-    if (fs.existsSync('db.' + process.env.NODE_ENV + '.sqlite')) {
-        fs.unlink('db.' + process.env.NODE_ENV + '.sqlite', function(err) {
-            if (err) {
-                throw err;
-            } else {
+    // get db config
+    console.log("Starting wipe db task");
+    var clove = require('./app/core'),
+        db = clove.db,
+        config = clove.config;
+        
+    if (config.dialect == 'sqlite') {
+        console.log('Deleting SQLITE db');
+        try {
+            if (fs.statSync('db.' + process.env.NODE_ENV + '.sqlite')) {
+                fs.unlink('db.' + process.env.NODE_ENV + '.sqlite', function(err) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        done();
+                    }
+                });
+            }
+            else {
                 done();
             }
+        } catch (err) {
+            done();
+        }
+    } else if (config.dialect == 'mysql') {
+        var dbName = db.sequelize.config.database;
+        delete db.sequelize.config.database;
+        delete db.sequelize.connectionManager.config.database;
+        delete db.sequelize.options.database;
+        
+        console.log('Deleting MYSQL db');
+        db.sequelize.query(`drop database if exists ${dbName};`).then(function(results){
+            db.sequelize.query(`create database ${dbName};`).then(function(result){
+                db.sequelize.config.database = dbName;
+                db.sequelize.options.database = dbName;
+                db.sequelize.connectionManager.config.database = dbName;
+                done(); 
+            });
+        }).catch(function(err) {
+            throw err;
         });
-    }
-    else {
-        done();
+    } else if (config.dialect == 'mssql') {
+        var dbName = db.sequelize.config.database;
+        delete db.sequelize.config.database;
+        delete db.sequelize.connectionManager.config.database;
+        delete db.sequelize.options.database;
+        console.log('Deleting MSSQL db');
+        db.sequelize.query(`
+            USE master;
+            IF EXISTS(select * from sys.databases where name='${dbName}')
+                DROP DATABASE ${dbName};
+            CREATE DATABASE ${dbName};
+        `).then(function(results){
+            console.log(results);
+            db.sequelize.config.database = dbName;
+            db.sequelize.options.database = dbName;
+            db.sequelize.connectionManager.config.database = dbName;
+            done();
+        }).catch(function(err) {
+            console.log(err);
+            throw err;
+        });
     }
 });
 
 gulp.task('mocha:test', function() {
     return gulp.src('tests/*.js')
-        .pipe(mocha())
+        .pipe(mocha({timeout: 10000}))
         .once('error', function() {
             process.exit(1);
         })
@@ -49,17 +100,17 @@ gulp.task('run_tests', function(cb){
 gulp.task('migrate', dbTasks['db:migrate'].task);
 
 gulp.task('seed:master', function(cb){
-    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/master').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/master --config=./config/local.js').toString();
     cb();
 });
 
 gulp.task('migrate', function(cb){
-    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:migrate').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:migrate --config=./config/local.js').toString();
     cb();
 });
 
 gulp.task('seed:test', function(cb) {
-    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/test').toString();
+    child_process.execSync(path.resolve('./node_modules/.bin/sequelize') + ' db:seed:all --seeders-path=./seeders/test --config=./config/local.js').toString();
     cb();
 });
 

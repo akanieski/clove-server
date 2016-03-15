@@ -50,7 +50,7 @@ function CloveServer(options, completed) {
                 if (completed) completed();
             });
         }
-    });
+    }).catch((err) => {throw err;});
     
 };
 

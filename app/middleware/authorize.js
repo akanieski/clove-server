@@ -70,9 +70,7 @@ module.exports = (function () {
                                 return;
                             }
                             request.params[appDomainField] = parseInt(request.params[appDomainField], 10);
-                            appDomainMatch = _.findWhere(payload.userAppDomains, {
-                                appDomainId: request.params[appDomainField]
-                            });
+                            appDomainMatch = payload.userAppDomains.filter((i) => i.appDomainId == request.params[appDomainField]).length > 0;
 
                             if (!appDomainMatch) {
                                 bail("User has no access to the app domain specified", 401);
