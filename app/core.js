@@ -8,12 +8,16 @@ module.exports = function () {
         env = "development";
     }
     var config = require("../config/config.js")[env];
-    
-    var local = require("../config/local.js")[env];
-    
+
+    try {
+      var local = require("../config/local.js")[env];
+    } catch(err) {
+      // no local settings file located
+    }
+
     if (local) Object.assign(config, local);
-    
-    
+
+
     var core = {
         db: require("./models")(env, config),
         config: config,
