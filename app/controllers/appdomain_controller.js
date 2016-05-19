@@ -3,11 +3,46 @@
 module.exports = function AppDomainController(app) {
     var db = clove.db,
         async = require("async"),
+        jwt = require("jsonwebtoken"),
         Controller = this;
+
+    Controller.selectAppDomain = function selectAppDomain(req, res, next) {
+        var bail = function (err, code) {
+            clove.log(arguments);
+            res.status(code || 500).send({
+                error: err,
+                success: false
+            });
+        };
+
+        db.UserAppDomain.find({
+            where: {userId: req.params.userId, appDomainId: req.params.appDomainId},
+            include: [
+                {
+                    as: "appDomain",
+                    model: db.AppDomain
+                }
+            ]
+        }).then(function (userAppDomain) {
+            if (!userAppDomain) {
+                bail("App domain not accessible for given user", 401);
+                return;
+            }
+            var domain_token = jwt.sign(userAppDomain.appDomain.toJSON(), clove.config.secret, {
+                issuer: require("os").hostname(),
+                subject: "domain_token"
+            });
+            res.status(200).send({
+                success: true,
+                token: domain_token
+            });
+        }).catch(bail);
+
+    };
 
     Controller.getAppDomainsByUser = function getAppDomainsByUser(req, res, next) {
         var bail = function (err, code) {
-            console.log(arguments);
+            clove.log(arguments);
             res.status(code || 500).send({
                 error: err,
                 success: false
@@ -40,7 +75,7 @@ module.exports = function AppDomainController(app) {
 
     Controller.getAppDomainByUser = function getAppDomainByUser(req, res, next) {
         var bail = function (err, code) {
-            console.log(arguments);
+            clove.log(arguments);
             res.status(code || 500).send({
                 error: err,
                 success: false
@@ -207,10 +242,11 @@ module.exports = function AppDomainController(app) {
         };
 
         app.post("/api/appdomain", clove.middleware.authorize({}, Controller.createAppDomain));
+        app.post("/api/appdomain/:appDomainId/user/:userId/selectAppDomain", clove.middleware.authorize({}, Controller.selectAppDomain));
         app.get("/api/appdomain/:id", clove.middleware.authorize({}, Controller.getAppDomain));
         app.get("/api/user/:userId/appdomains", clove.middleware.authorize({}, Controller.getAppDomainsByUser));
         app.get("/api/user/:userId/appdomain/:appDomainId", clove.middleware.authorize({}, Controller.getAppDomainByUser));
-
+        //app.get("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize({}, Controller.getUserByAppDomain));
         app.post("/api/appdomain/:appDomainId/user/:userId", clove.middleware.authorize(DOMAIN_ADMINS_ONLY, Controller.addUserToAppDomain));
 
     });

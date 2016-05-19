@@ -38,13 +38,14 @@ module.exports = {
                     },
                     userId: {
                         type: DataTypes.BIGINT,
-                        references: "tbl_users",
-                        referenceKey: "id"
+                        references: {model: "tbl_users", key: "id"}
                     },
                     appDomainId: {
                         type: DataTypes.BIGINT,
-                        references: "tbl_appdomains",
-                        referenceKey: "id"
+                        references: {
+                            model: "tbl_appdomains",
+                            key: "id"
+                        }
                     },
                     createdAt: {
                         allowNull: false,
@@ -61,8 +62,7 @@ module.exports = {
             function (next) {
                 migration.addColumn("tbl_users", "defaultAppDomainId", {
                     type: DataTypes.BIGINT,
-                    references: "tbl_users",
-                    referenceKey: "id"
+                    references: {model: "tbl_users", key: "id"}
                 }).done(function () {
                     next();
                 });
@@ -107,14 +107,12 @@ module.exports = {
                     claimId: {
                         type: DataTypes.BIGINT,
                         allowNull: false,
-                        reference: "tbl_userclaims",
-                        referenceKey: "id"
+                        reference: {model: "tbl_userclaims", key: "id"}
                     },
                     userAppDomainId: {
                         type: DataTypes.BIGINT,
                         allowNull: false,
-                        reference: "tbl_userappdomains",
-                        referenceKey: "id"
+                        reference: {model: "tbl_userappdomains", key: "id"}
                     },
                     createdAt: {
                         allowNull: false,

@@ -2,12 +2,12 @@
 /* global __dirname */
 /* global process */
 /* jshint node: true */
-module.exports = function (env) {
+module.exports = function (env, config) {
     var fs = require("fs"),
         path = require("path"),
         Sequelize = require("sequelize"),
         basename = path.basename(module.filename),
-        config = require(path.resolve("./config/config.json"))[env],
+        config = config || require(path.resolve("./config/config.js"))[env],
         sequelize,
         db = {};
 

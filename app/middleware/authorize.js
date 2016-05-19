@@ -24,7 +24,7 @@ module.exports = (function () {
             action = options;
             options = {};
         }
-        return function processJWT(request, response, next) {
+        return function processJWT(request, response, nextHandler) {
             var bail = function (err, code) {
                 response.status(code || 500).send({
                     error: err,
@@ -49,8 +49,7 @@ module.exports = (function () {
                 }
                 var payload = jwt.decode(token);
                 if (!payload) {
-                    console.log(">>>>>>>>>>");
-                    console.log(request.headers.authorization);
+                    clove.log(request.headers.authorization);
                     bail("Token invalid", 400);
                     return;
                 }
@@ -71,9 +70,7 @@ module.exports = (function () {
                                 return;
                             }
                             request.params[appDomainField] = parseInt(request.params[appDomainField], 10);
-                            appDomainMatch = _.findWhere(payload.userAppDomains, {
-                                appDomainId: request.params[appDomainField]
-                            });
+                            appDomainMatch = payload.userAppDomains.filter((i) => i.appDomainId == request.params[appDomainField]).length > 0;
 
                             if (!appDomainMatch) {
                                 bail("User has no access to the app domain specified", 401);
@@ -102,7 +99,7 @@ module.exports = (function () {
 
                 ], function () {
                     request.session = payload;
-                    action(request, response, next);
+                    action(request, response, nextHandler);
                 });
 
             } else {

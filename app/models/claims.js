@@ -62,7 +62,9 @@ module.exports = function (sequelize, DataTypes) {
                     });
                     claimsCache = _tempCache;
                     resolve(claimsCache);
-                }).catch(reject);
+                }).catch(function(err) {
+                    reject(err);
+                });
             } else {
                 resolve(claimsCache);
             }

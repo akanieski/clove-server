@@ -1,4 +1,4 @@
-{
+module.exports = {
   "development": {
     "dialect": "sqlite",
     "storage": "./db.development.sqlite",
@@ -21,13 +21,16 @@
       "capitals": true
     }
   },
-  "codeship": {
-    "dialect": "postgres",
-    "use_env_variable": "DATABASE_URL",
-    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "endpoint_port": 4444,
-    "secret":  "dev-secret",
+  "test": { 
+    "ssl": {
+        "key": "./certs/self-signed.key",
+        "crt": "./certs/self-signed.crt"
+    },
+    "logging": false,
+    "endpoint_port": 5555,
+    "secret":  "test-secret",
     "allow_tests": true,
+    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
     "smtp": {
       "system": {
         "type": "test"
@@ -39,19 +42,19 @@
       "capitals": true
     }
   },
-  "heroku_sandbox": {
-    "dialect": "sqlite",
-    "storage": "./db.test.sqlite",
-    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
-    "secret":  "dev-secret",
+  "test-aws": { 
+    "ssl": {
+        "key": "./certs/self-signed.key",
+        "crt": "./certs/self-signed.crt"
+    },
+    "logging": false,
+    "endpoint_port": 5555,
+    "secret":  "test-secret",
     "allow_tests": true,
+    "password_reset_url": "http://127.0.0.1:8080/#/password_reset",
     "smtp": {
       "system": {
-        "user": "andrew.legacy@gmail.com", 
-        "password": "wyndin00", 
-        "host": "smtp.gmail.com", 
-        "ssl": true,
-        "type": "smtp"
+        "type": "test"
       }
     },
     "password_strength": {
@@ -60,14 +63,12 @@
       "capitals": true
     }
   },
-  "test": {
+  "test-azure": { 
     "ssl": {
-      "key": "./certs/self-signed.key",
-      "crt": "./certs/self-signed.crt"
-    },  
+        "key": "./certs/self-signed.key",
+        "crt": "./certs/self-signed.crt"
+    },
     "logging": false,
-    "dialect": "sqlite",
-    "storage": "./db.test.sqlite",
     "endpoint_port": 5555,
     "secret":  "test-secret",
     "allow_tests": true,

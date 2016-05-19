@@ -32,7 +32,7 @@ module.exports = function AuthController(app) {
         var q = db.User.findOne({
             where: {
                 active: true,
-                username: request.body.username,
+                $or: [{email: request.body.email}, {username: request.body.username}],
                 password: clove.utils.encrypt(request.body.password)
             },
             include: [{
@@ -54,9 +54,13 @@ module.exports = function AuthController(app) {
                     userId: user.id,
                     sysadmin: user.sysadmin,
                     username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
                     userAppDomains: user.userAppDomains,
                 }, clove.config.secret, {
-                    issuer: require("os").hostname()
+                    issuer: require("os").hostname(),
+                    subject: "auth_token"
                 });
                 response.status(200).send({
                     token: token
@@ -68,7 +72,7 @@ module.exports = function AuthController(app) {
             }
 
         }).catch(function (err) {
-            console.log(err.stack);
+            clove.log(err.stack);
             response.status(500).send({
                 error: "Server error.",
                 detail: err
@@ -87,7 +91,7 @@ module.exports = function AuthController(app) {
                 success: false
             });
         };
-
+        
         var user = clove.db.User.build(request.body);
 
         clove.async.series([

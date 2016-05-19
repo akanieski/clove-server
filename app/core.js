@@ -1,13 +1,25 @@
+'use strict';
 /* global process */
+var fs = require('fs');
+
 module.exports = function () {
     var env = process.env.NODE_ENV;
     if (!env) {
         env = "development";
     }
-    var config = require("../config/config.json")[env];
+    var config = require("../config/config.js")[env];
+
+    try {
+      var local = require("../config/local.js")[env];
+    } catch(err) {
+      // no local settings file located
+    }
+
+    if (local) Object.assign(config, local);
+
 
     var core = {
-        db: require("./models")(env),
+        db: require("./models")(env, config),
         config: config,
         async: require("async"),
         controllers: {},

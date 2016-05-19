@@ -2,3 +2,5 @@
 node_modules/
 *.sqlite
 bin/config.cmd
+.tmp/
+config/local.js

@@ -157,7 +157,7 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-
+                
                 assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
                 assert.equal(body.success, true, "response should contain claims for specified app domain and user");
 
@@ -175,7 +175,7 @@ describe("Claims API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-
+                
                 assert.equal(resp.statusCode, 200, "adding claim to user/appDomain response status code must be 200");
                 assert.equal(body.success, true, "response should contain claims for specified app domain and user");
 
