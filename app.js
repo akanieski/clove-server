@@ -7,7 +7,7 @@ var fs = require("fs");
 var path = require("path");
 var bodyParser = require("body-parser");
 
-global.clove = require("./app/core");
+global.clove = require("./app/core")();
 function CloveServer(options, completed) {
     options = options || {};
     clove.log = options.logger || console.log;

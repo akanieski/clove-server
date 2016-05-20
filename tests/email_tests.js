@@ -6,7 +6,7 @@ var request = require("request");
 var assert = require("assert");
 var path = require("path");
 var EmailService = require("../app/services/email");
-global.clove = require("../app/core");
+global.clove = require("../app/core")();
 
 describe("Email Services", function () {
 

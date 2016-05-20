@@ -5,7 +5,7 @@
 var request = require("request");
 var assert = require("assert");
 var jwt = require("jsonwebtoken");
-global.clove = require("../app/core");
+global.clove = require("../app/core")();
 
 var host = process.env.testing_host || ((clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port);
 

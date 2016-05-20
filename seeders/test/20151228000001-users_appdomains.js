@@ -3,7 +3,7 @@
 /* global clove */
 /* jshint node: true */
 
-global.clove = require("../../app/core");
+global.clove = require("../../app/core")();
 var Promise = require("promise");
 var async = require("async");
 var _ = require('lodash');

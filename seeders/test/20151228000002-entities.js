@@ -2,7 +2,7 @@
 /* jshint node: true */
 var Promise = require("promise");
 var async = require("async");
-global.clove = require("../../app/core");
+global.clove = require("../../app/core")();
 
 var contact1 = {
     id: 1,
