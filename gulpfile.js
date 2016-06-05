@@ -17,15 +17,15 @@ var gulp = require('gulp'),
 gulp.task('wipedb', function(done) {
     // get db config
     console.log("Starting wipe db task");
-    var clove = require('./app/core'),
+    var clove = require('./app/core')(),
         db = clove.db,
         config = clove.config;
         
     if (config.dialect == 'sqlite') {
         console.log('Deleting SQLITE db');
         try {
-            if (fs.statSync('db.' + process.env.NODE_ENV + '.sqlite')) {
-                fs.unlink('db.' + process.env.NODE_ENV + '.sqlite', function(err) {
+            if (fs.statSync(config.storage)) {
+                fs.unlink(config.storage, function(err) {
                     if (err) {
                         throw err;
                     } else {
@@ -83,7 +83,8 @@ gulp.task('wipedb', function(done) {
 gulp.task('mocha:test', function() {
     return gulp.src('tests/*.js')
         .pipe(mocha({timeout: 10000}))
-        .once('error', function() {
+        .once('error', function(err) {
+            console.log(err);
             process.exit(1);
         })
         .once('end', function() {

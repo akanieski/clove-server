@@ -1,7 +1,7 @@
 "use strict";
 /* jshint node: true */
 
-global.clove = require("../../app/core");
+global.clove = require("../../app/core")();
 
 var claims = [
     {

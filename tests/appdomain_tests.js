@@ -5,7 +5,7 @@
 var request = require("request");
 var assert = require("assert");
 var jwt = require("jsonwebtoken");
-global.clove = require("../app/core");
+global.clove = require("../app/core")();
 
 var host = process.env.testing_host || ((clove.config.ssl ? "https" : "http") + "://127.0.0.1:" + clove.config.endpoint_port);
 
@@ -45,7 +45,6 @@ describe("App Domain API", function () {
 
     it("should get specified from user from app domain", function (done) {
         GetToken("administrator", "administrator", function (token) {
-            console.log(token);
             request.get({
                 url: host + "/api/appdomain/1/user/1",
                 json: {},
@@ -53,7 +52,7 @@ describe("App Domain API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                console.log(err || body);
+                
                 assert.equal(resp.statusCode, 200, "specific user by app domain response status code must be 200");
                 assert.equal(body.data !== "undefined" && body.data !== null, true, "response should contain specified user");
 
@@ -120,7 +119,7 @@ describe("App Domain API", function () {
                     Authorization: "Bearer " + token
                 }
             }, function (err, resp, body) {
-                console.log(err || body);
+                
                 assert.equal(resp.statusCode, 401, "add app domain response status code must be 401");
                 assert.equal(body.success, false, "response should be successful");
 

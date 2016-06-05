@@ -2,20 +2,23 @@
 /* global process */
 var fs = require('fs');
 
-module.exports = function () {
-    var env = process.env.NODE_ENV;
-    if (!env) {
-        env = "development";
-    }
-    var config = require("../config/config.js")[env];
+module.exports = function (extConfig) {
+    let config = extConfig;
+    if (!extConfig) {
+        var env = process.env.NODE_ENV;
+        if (!env) {
+            env = "development";
+        }
+        config = require("../config/config.js")[env];
 
-    try {
-      var local = require("../config/local.js")[env];
-    } catch(err) {
-      // no local settings file located
-    }
+        try {
+            var local = require("../config/local.js")[env];
+        } catch(err) {
+        // no local settings file located
+        }
 
-    if (local) Object.assign(config, local);
+        if (local) Object.assign(config, local);
+    }
 
 
     var core = {
@@ -37,4 +40,4 @@ module.exports = function () {
 
     return core;
 
-}();
+};
