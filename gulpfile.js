@@ -24,8 +24,8 @@ gulp.task('wipedb', function(done) {
     if (config.dialect == 'sqlite') {
         console.log('Deleting SQLITE db');
         try {
-            if (fs.statSync('db.' + process.env.NODE_ENV + '.sqlite')) {
-                fs.unlink('db.' + process.env.NODE_ENV + '.sqlite', function(err) {
+            if (fs.statSync(config.storage)) {
+                fs.unlink(config.storage, function(err) {
                     if (err) {
                         throw err;
                     } else {
